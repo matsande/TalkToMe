@@ -11,7 +11,7 @@
         /// The Initialize
         /// </summary>
         /// <param name="keyEventHandler">The <see cref="Func{(int code, IntPtr wparam, IntPtr lparam), bool}"/></param>
-        public static void Initialize(Func<(int code, IntPtr wparam, IntPtr lparam), bool> keyEventHandler)
+        public static void Initialize(Func<KeyProcArgs, bool> keyEventHandler)
         {
             if (_hookID != IntPtr.Zero)
             {
@@ -54,7 +54,7 @@
         /// <returns>The <see cref="IntPtr"/></returns>
         private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            var handled = onKeyEvent((nCode, wParam, lParam));
+            var handled = onKeyEvent(new KeyProcArgs(nCode, wParam, lParam));
             return handled
                 ? (IntPtr)1
                 : NativeMethods.CallNextHookEx(_hookID, nCode, wParam, lParam);
@@ -64,6 +64,6 @@
 
         private static IntPtr _hookID = IntPtr.Zero;
 
-        private static Func<(int code, IntPtr wparam, IntPtr lparam), bool> onKeyEvent;
+        private static Func<KeyProcArgs, bool> onKeyEvent;
     }
 }

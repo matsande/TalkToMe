@@ -75,6 +75,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HookKeyMonitorTest.cs" />
     <Compile Include="SpeechManagerTest.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

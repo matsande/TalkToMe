@@ -13,14 +13,16 @@
     {
         private readonly HashSet<KeyInfo> observedKeys;
         private readonly Subject<KeyInfo> keysSubject;
+        private readonly IHookProvider hookProvider;
         private bool disposedValue = false; // To detect redundant calls
 
         // TODO: Create an abstraction for the actual hook and create unittests.
-        public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys)
+        public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider)
         {
             this.observedKeys = new HashSet<KeyInfo>(observedKeys);
             this.keysSubject = new Subject<KeyInfo>();
-            InterceptKeys.Initialize(this.OnKeyEvent);
+            this.hookProvider = hookProvider;
+            this.hookProvider.Install(this.OnKeyEvent);
         }
 
         public IObservable<KeyInfo> KeysObservable => this.keysSubject.AsObservable();
@@ -34,7 +36,7 @@
                     this.keysSubject.Dispose();
                 }
 
-                InterceptKeys.Cleanup();
+                this.hookProvider.Uninstall();
 
                 disposedValue = true;
             }
@@ -54,18 +56,18 @@
         }
 
 
-        private bool OnKeyEvent((int code, IntPtr wparam, IntPtr lparam) keyCodes)
+        private bool OnKeyEvent(KeyProcArgs keyCodes)
         {
             var handled = false;
 
             try
             {
-                if (keyCodes.wparam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                if (keyCodes.WParam == (IntPtr)NativeMethods.WM_KEYDOWN)
                 {
-                    NativeMethods.KBDLLHOOKSTRUCT kbd = (NativeMethods.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(keyCodes.lparam, typeof(NativeMethods.KBDLLHOOKSTRUCT));
+                    NativeMethods.KBDLLHOOKSTRUCT kbd = (NativeMethods.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(keyCodes.LParam, typeof(NativeMethods.KBDLLHOOKSTRUCT));
                     var vkCode = kbd.vkCode;
                     var key = (Keys)vkCode;
-                    Debug.Print($"Got key: {key}");
+                    //Debug.Print($"Got key: {key}");
 
                     if (IsModifier(key))
                     {
@@ -75,7 +77,7 @@
                     else
                     {
                         var modkey = GetModifierState();
-                        Debug.Print($"{key} With modifiers: {modkey}");
+                        //Debug.Print($"{key} With modifiers: {modkey}");
                         var keyInfo = new KeyInfo(key, modkey);
                         if (this.observedKeys.Contains(keyInfo))
                         {
@@ -88,6 +90,7 @@
             catch (Exception)
             {
                 // Catch all, protect the caller.
+                // TODO: Trace
                 handled = false;
             }
 
@@ -113,6 +116,7 @@
 
         private static Keys GetModifierState()
         {
+            // TODO: Move GetKeyState to an abstraction so this can be tested
             Keys key = Keys.None;
             key |= (NativeMethods.GetKeyState(NativeMethods.VK_SHIFT) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.Shift : 0;
             key |= (NativeMethods.GetKeyState(NativeMethods.VK_CONTROL) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.Control : 0;
@@ -122,7 +126,47 @@
 
             return key;
         }
+    }
 
+    public struct KeyProcArgs
+    {
+        public KeyProcArgs(int code, IntPtr wParam, IntPtr lParam)
+        {
+            this.Code = code;
+            this.WParam = wParam;
+            this.LParam = lParam;
+        }
 
+        public int Code
+        {
+            get;
+        }
+        public IntPtr WParam
+        {
+            get;
+        }
+        public IntPtr LParam
+        {
+            get;
+        }
+    }
+
+    public interface IHookProvider
+    {
+        void Install(Func<KeyProcArgs, bool> callback);
+        void Uninstall();
+    }
+
+    public class StaticHookProvider : IHookProvider
+    {
+        public void Install(Func<KeyProcArgs, bool> callback)
+        {
+            InterceptKeys.Initialize(callback);
+        }
+
+        public void Uninstall()
+        {
+            InterceptKeys.Cleanup();
+        }
     }
 }

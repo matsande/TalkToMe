@@ -36,7 +36,7 @@ namespace TalkToMe.UI
             },
             "Nope");
 
-            var hook = new HookKeyMonitor(config.Hotkeys.Keys);
+            var hook = new HookKeyMonitor(config.Hotkeys.Keys, new StaticHookProvider());
             hook.KeysObservable.Subscribe(k =>
             {
                 System.Diagnostics.Debug.Print($"Got key: {k}");

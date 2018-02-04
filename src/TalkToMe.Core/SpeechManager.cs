@@ -1,38 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-
-namespace TalkToMe.Core
+﻿namespace TalkToMe.Core
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+
     /*
     TODO:
     - Ability to update/persist config
-    - Unittest for KeyMonitor
+        - Includes having a strategy for how to handle UI updates.
+    - DONE - Unittest for KeyMonitor
     - DONE - Basic impl of speech
 ------------------------------ Above should be done before initial push
     - UI
     - Language selection
     - KeyConfig
+    - Trace
 
     */
+
+    /// <summary>
+    /// Defines the <see cref="SpeechManager" />
+    /// </summary>
     public class SpeechManager : IDisposable
     {
-        private readonly IClipboardTextMonitor clipboardMonitor;
-        private readonly ISpeech speech;
-        private readonly IKeyMonitor keyMonitor;
-        private readonly IConfigPersistence configPersistence;
-        private readonly Dictionary<CommandType, Action> commandMap;
-        private readonly IDisposable clipboardSubscription;
-        private readonly IDisposable keySubscription;
-
-        private Config config;
-        private string lastText;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SpeechManager"/> class.
+        /// </summary>
+        /// <param name="clipboardMonitor">The <see cref="IClipboardTextMonitor"/></param>
+        /// <param name="speech">The <see cref="ISpeech"/></param>
+        /// <param name="keyMonitor">The <see cref="IKeyMonitor"/></param>
+        /// <param name="configPersistence">The <see cref="IConfigPersistence"/></param>
+        /// <param name="config">The <see cref="Config"/></param>
         public SpeechManager(
-            IClipboardTextMonitor clipboardMonitor, 
-            ISpeech speech, 
-            IKeyMonitor keyMonitor, 
+            IClipboardTextMonitor clipboardMonitor,
+            ISpeech speech,
+            IKeyMonitor keyMonitor,
             IConfigPersistence configPersistence,
             Config config)
         {
@@ -48,6 +51,38 @@ namespace TalkToMe.Core
             this.keySubscription = this.keyMonitor.KeysObservable.Subscribe(this.OnKeyPressed);
         }
 
+        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// The Dispose
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        /// <summary>
+        /// The Dispose
+        /// </summary>
+        /// <param name="disposing">The <see cref="bool"/></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    this.clipboardSubscription.Dispose();
+                    this.keySubscription.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        /// <summary>
+        /// The InitializeCommands
+        /// </summary>
+        /// <param name="config">The <see cref="Config"/></param>
+        /// <returns>The <see cref="Dictionary{CommandType, Action}"/></returns>
         private Dictionary<CommandType, Action> InitializeCommands(Config config)
         {
             var commandMap = new Dictionary<CommandType, Action>();
@@ -59,15 +94,19 @@ namespace TalkToMe.Core
                     case CommandType.Speak:
                         commandMap.Add(command, this.SpeakLastText);
                         break;
+
                     case CommandType.SwapLanguage:
                         commandMap.Add(command, this.SwapLanguage);
                         break;
+
                     case CommandType.Mute:
                         commandMap.Add(command, this.ToggleMute);
                         break;
+
                     case CommandType.ToggleAutoMode:
                         commandMap.Add(command, this.ToggleAutoMode);
                         break;
+
                     default:
                         // TODO: Trace unhandled command
                         break;
@@ -76,12 +115,18 @@ namespace TalkToMe.Core
             return commandMap;
         }
 
+        /// <summary>
+        /// The ToggleAutoMode
+        /// </summary>
         private void ToggleAutoMode()
         {
-            // TODO: Persistence.
             this.config = this.config.With(autoMode: !this.config.AutoMode);
+            this.configPersistence.Save(this.config);
         }
 
+        /// <summary>
+        /// The ToggleMute
+        /// </summary>
         private void ToggleMute()
         {
             this.muted = !this.muted;
@@ -91,11 +136,16 @@ namespace TalkToMe.Core
             }
         }
 
+        /// <summary>
+        /// The SwapLanguage
+        /// </summary>
         private void SwapLanguage()
         {
-            // More research is needed here.
         }
 
+        /// <summary>
+        /// The SpeakLastText
+        /// </summary>
         private void SpeakLastText()
         {
             if (!string.IsNullOrEmpty(this.lastText))
@@ -104,6 +154,10 @@ namespace TalkToMe.Core
             }
         }
 
+        /// <summary>
+        /// The OnTextChanged
+        /// </summary>
+        /// <param name="text">The <see cref="string"/></param>
         private void OnTextChanged(string text)
         {
             this.lastText = text;
@@ -113,6 +167,10 @@ namespace TalkToMe.Core
             }
         }
 
+        /// <summary>
+        /// The OnKeyPressed
+        /// </summary>
+        /// <param name="key">The <see cref="KeyInfo"/></param>
         private void OnKeyPressed(KeyInfo key)
         {
             if (this.config.Hotkeys.TryGetValue(key, out var command) &&
@@ -126,41 +184,25 @@ namespace TalkToMe.Core
             }
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private readonly IClipboardTextMonitor clipboardMonitor;
+
+        private readonly ISpeech speech;
+
+        private readonly IKeyMonitor keyMonitor;
+
+        private readonly IConfigPersistence configPersistence;
+
+        private readonly Dictionary<CommandType, Action> commandMap;
+
+        private readonly IDisposable clipboardSubscription;
+
+        private readonly IDisposable keySubscription;
+
+        private Config config;
+
+        private string lastText;
+        private bool disposedValue = false;// To detect redundant calls
+
         private bool muted;
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    this.clipboardSubscription.Dispose();
-                    this.keySubscription.Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
-
-                disposedValue = true;
-            }
-        }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~SpeechManager() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

@@ -34,6 +34,13 @@ namespace TalkToMe.Core
             return this.Key.Equals(other.Key) && this.Modifier.Equals(other.Modifier);
         }
 
+        public override bool Equals(object obj)
+        {
+            return (obj is KeyInfo other)
+                ? this.Equals(other)
+                : false;
+        }
+
         [JsonProperty]
         private readonly Keys key;
 
@@ -59,34 +66,4 @@ namespace TalkToMe.Core
         public KeyInfo KeyInfo => this.keyInfo;
         public CommandType Command => this.command;
     }
-
-    //public class KeyInfoConverter : Newtonsoft.Json.JsonConverter
-    //{
-    //    public override bool CanConvert(Type objectType)
-    //    {
-    //        return objectType == typeof(KeyInfo);
-    //    }
-
-    //    public override object ReadJson(
-    //        JsonReader reader,
-    //        Type objectType,
-    //        object existingValue,
-    //        JsonSerializer serializer)
-    //    {
-    //        if (reader.TokenType == Newtonsoft.Json.JsonToken.Null)
-    //            return null;
-
-    //        var jObject = Newtonsoft.Json.Linq.JObject.Load(reader);
-
-    //        var target = new KeyInfo(
-    //            (Keys)(int)jObject["key"], (Keys)(int)jObject["modifier"]);
-
-    //        return target;
-    //    }
-
-    //    public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
-    //    {
-    //        serializer.Serialize(writer, value);
-    //    }
-    //}
 }
