@@ -12,23 +12,27 @@ namespace TalkToMe.Core
     {
         public bool AutoMode => this.autoMode;
         public Dictionary<KeyInfo, CommandType> Hotkeys => this.hotkeys;
-        public string SelectedLanguage => this.selectedLanguage;
+        public string PrimaryVoice => this.primaryVoice;
+        public string SecondaryVoice => this.secondaryVoice;
 
         public Config With(bool? autoMode = null,
             Dictionary<KeyInfo, CommandType> hotKeys = null,
-            string selectedLanguage = null)
+            string primaryVoice = null,
+            string secondaryVoice = null)
         {
             var sameInstance =
-                this.AutoMode == autoMode &&
-                this.Hotkeys == hotKeys &&
-                this.SelectedLanguage == selectedLanguage;
+                (this.AutoMode == autoMode || autoMode == null) &&
+                (this.Hotkeys == hotKeys || hotKeys == null) &&
+                (this.PrimaryVoice == primaryVoice || primaryVoice == null) &&
+                (this.SecondaryVoice == secondaryVoice || secondaryVoice == null);
 
             return sameInstance
                 ? this
                 : new Config(
                     autoMode ?? this.AutoMode, 
                     hotKeys ?? this.Hotkeys, 
-                    selectedLanguage ?? this.SelectedLanguage);
+                    primaryVoice ?? this.PrimaryVoice,
+                    secondaryVoice ?? this.SecondaryVoice);
 
         }
 
@@ -51,19 +55,20 @@ namespace TalkToMe.Core
             }
         }
 
-        public Config(bool autoMode, Dictionary<KeyInfo, CommandType> hotkeys, string selectedLanguage)
-            : this(autoMode, hotkeys.Select(kvp => new KeyInfoAndCommand(kvp.Key, kvp.Value)).ToList(), selectedLanguage)
+        public Config(bool autoMode, Dictionary<KeyInfo, CommandType> hotkeys, string primaryVoice, string secondaryVoice)
+            : this(autoMode, hotkeys.Select(kvp => new KeyInfoAndCommand(kvp.Key, kvp.Value)).ToList(), primaryVoice, secondaryVoice)
         {
             this.hotkeys = hotkeys;
         }
 
         [JsonConstructor]
-        public Config(bool autoMode, List<KeyInfoAndCommand> hotkeySetup, string selectedLanguage)
+        public Config(bool autoMode, List<KeyInfoAndCommand> hotkeySetup, string primaryVoice, string secondaryVoice)
         {
             this.autoMode = autoMode;
             this.hotkeySetup = hotkeySetup.ToList();
             this.hotkeys = hotkeySetup.ToDictionary(item => item.KeyInfo, item => item.Command);
-            this.selectedLanguage = selectedLanguage;
+            this.primaryVoice = primaryVoice;
+            this.secondaryVoice = secondaryVoice;
         }
 
         private static readonly Encoding Utf8NoBom = new UTF8Encoding(false);
@@ -77,6 +82,9 @@ namespace TalkToMe.Core
         private List<KeyInfoAndCommand> hotkeySetup = new List<KeyInfoAndCommand>();
 
         [JsonProperty]
-        private string selectedLanguage;
+        private string primaryVoice;
+
+        [JsonProperty]
+        private string secondaryVoice;
     }
 }

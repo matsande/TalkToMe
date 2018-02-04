@@ -16,7 +16,7 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.A, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(false, hotKeys, "TestLang");
+            var config = new Config(false, hotKeys, "TestLang", "OtherLang");
             
             var keySubject = new Subject<KeyInfo>();
             var textSubject = new Subject<string>();

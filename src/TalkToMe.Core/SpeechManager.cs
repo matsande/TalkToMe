@@ -3,12 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reactive.Linq;
+    using System.Reactive.Subjects;
     using System.Windows.Forms;
 
     /*
     TODO:
-    - Ability to update/persist config
+    - DONE - Ability to update/persist config
         - Includes having a strategy for how to handle UI updates.
+            - DONE - albeit crude atm.
+
     - DONE - Unittest for KeyMonitor
     - DONE - Basic impl of speech
 ------------------------------ Above should be done before initial push
@@ -16,6 +20,7 @@
     - Language selection
     - KeyConfig
     - Trace
+    - Version
 
     */
 
@@ -49,7 +54,24 @@
 
             this.clipboardSubscription = this.clipboardMonitor.ClipboardTextObservable.Subscribe(this.OnTextChanged);
             this.keySubscription = this.keyMonitor.KeysObservable.Subscribe(this.OnKeyPressed);
+            this.stateChangeSubject = new Subject<SpeechManagerStateChange>();
         }
+
+        public IObservable<SpeechManagerStateChange> StateChangeObservable => this.stateChangeSubject.AsObservable();
+
+        public bool AutoMode => this.config.AutoMode;
+
+        public void SetAutoMode(bool automode)
+        {
+            if (this.config.AutoMode != automode)
+            {
+                this.config = this.config.With(autoMode: automode);
+                this.configPersistence.Save(this.config);
+                this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
+            }
+        }
+
+        public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
 
         // This code added to correctly implement the disposable pattern.
         /// <summary>
@@ -72,6 +94,7 @@
                 {
                     this.clipboardSubscription.Dispose();
                     this.keySubscription.Dispose();
+                    this.stateChangeSubject.Dispose();
                 }
 
                 disposedValue = true;
@@ -120,8 +143,7 @@
         /// </summary>
         private void ToggleAutoMode()
         {
-            this.config = this.config.With(autoMode: !this.config.AutoMode);
-            this.configPersistence.Save(this.config);
+            this.SetAutoMode(!this.config.AutoMode);
         }
 
         /// <summary>
@@ -197,12 +219,17 @@
         private readonly IDisposable clipboardSubscription;
 
         private readonly IDisposable keySubscription;
-
+        private readonly Subject<SpeechManagerStateChange> stateChangeSubject;
         private Config config;
 
         private string lastText;
         private bool disposedValue = false;// To detect redundant calls
 
         private bool muted;
+    }
+
+    public class SpeechManagerStateChange
+    {
+        // Note: Placeholder
     }
 }

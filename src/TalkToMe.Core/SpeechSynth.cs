@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Speech.Synthesis;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TalkToMe.Core
 {
@@ -21,9 +19,19 @@ namespace TalkToMe.Core
             this.speech.SpeakAsync(text);
         }
 
+        public void SelectVoice(string voiceName)
+        {
+            this.speech.SelectVoice(voiceName);
+        }
+
         public SpeechSynth()
         {
             this.speech = new SpeechSynthesizer();
         }
+
+        public IReadOnlyCollection<string> AvailableVoices =>
+            this.speech.GetInstalledVoices()
+            .Where(voice => voice.Enabled)
+            .Select(voice => voice.VoiceInfo.Name).ToList();
     }
 }

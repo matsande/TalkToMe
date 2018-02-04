@@ -1,6 +1,6 @@
 ﻿namespace TalkToMe.Core
 {
-    using System.Threading.Tasks;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Defines the <see cref="ISpeech" />
@@ -14,5 +14,10 @@
         /// <returns>The <see cref="Task"/></returns>
         void Speak(string text);
         void Abort();
+        IReadOnlyCollection<string> AvailableVoices
+        {
+            get;
+        }
+        void SelectVoice(string voiceName);
     }
 }

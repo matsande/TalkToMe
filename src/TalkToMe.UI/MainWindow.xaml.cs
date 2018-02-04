@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TalkToMe.Core;
+using TalkToMe.UI.View;
+using TalkToMe.UI.ViewModel;
 
 namespace TalkToMe.UI
 {
@@ -29,26 +31,42 @@ namespace TalkToMe.UI
 
         protected override void OnSourceInitialized(EventArgs e)
         {
-            var config = new Config(true, new Dictionary<KeyInfo, CommandType>
+            this.BootStrap();
+        }
+
+        private void BootStrap()
+        {
+            var configPersistence = new LocalConfigPersistence();
+            if (!configPersistence.TryLoad(out var config))
             {
-                { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
-                { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak }
-            },
-            "Nope");
+                config = new Config(
+                    true, 
+                    new Dictionary<KeyInfo, CommandType>
+                    {
+                        { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
+                        { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak }
+                    },
+                    string.Empty,
+                    string.Empty);
+            }
 
             var hook = new HookKeyMonitor(config.Hotkeys.Keys, new StaticHookProvider());
+            // TODO: Remove
             hook.KeysObservable.Subscribe(k =>
             {
                 System.Diagnostics.Debug.Print($"Got key: {k}");
             });
 
             var clipmon = new ClipboardTextMonitor(this);
+            // TODO: Remove
             clipmon.ClipboardTextObservable.Subscribe(text =>
             {
                 System.Diagnostics.Debug.Print($"Got clipboardtext: {text}");
             });
 
             var speechManager = new SpeechManager(clipmon, new SpeechSynth(), hook, new LocalConfigPersistence(), config);
+
+            this.mainView.DataContext = new SpeechManagerViewModel(speechManager);
         }
     }
 }

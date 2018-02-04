@@ -25,7 +25,7 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.Mute }
             };
-            var config = new Config(true, hotKeys, "SomeLang");
+            var config = new Config(true, hotKeys, "SomeLang", "OtherLang");
 
             Config newConfig;
             using (var ms = new MemoryStream())
@@ -38,7 +38,8 @@ namespace TalkToMe.Core.Unittest
             newConfig.Should().NotBeNull();
             newConfig.AutoMode.Should().Be(config.AutoMode);
             newConfig.Hotkeys.Should().Equal(config.Hotkeys);
-            newConfig.SelectedLanguage.Should().Be(config.SelectedLanguage);
+            newConfig.PrimaryVoice.Should().Be(config.PrimaryVoice);
+            newConfig.SecondaryVoice.Should().Be(config.SecondaryVoice);
         }
 
         [Fact]
@@ -49,7 +50,7 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.Mute }
             };
-            var configA = new Config(true, hotKeys, "SomeLang");
+            var configA = new Config(true, hotKeys, "SomeLang", "OtherLang");
             var newHotkeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.C, Keys.None), CommandType.SwapLanguage }
@@ -58,8 +59,8 @@ namespace TalkToMe.Core.Unittest
 
             newConfig.AutoMode.Should().Be(configA.AutoMode);
             newConfig.Hotkeys.Should().NotEqual(configA.Hotkeys);
-            newConfig.SelectedLanguage.Should().Be(configA.SelectedLanguage);
-            
+            newConfig.PrimaryVoice.Should().Be(configA.PrimaryVoice);
+            newConfig.SecondaryVoice.Should().Be(configA.SecondaryVoice);
         }
     }
 }
