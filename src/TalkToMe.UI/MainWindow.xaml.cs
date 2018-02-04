@@ -48,7 +48,7 @@ namespace TalkToMe.UI
                 System.Diagnostics.Debug.Print($"Got clipboardtext: {text}");
             });
 
-            var speechManager = new SpeechManager(clipmon, new SpeechSynth(), hook, config);
+            var speechManager = new SpeechManager(clipmon, new SpeechSynth(), hook, new LocalConfigPersistence(), config);
         }
     }
 }

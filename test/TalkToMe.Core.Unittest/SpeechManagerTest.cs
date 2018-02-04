@@ -29,7 +29,9 @@ namespace TalkToMe.Core.Unittest
             var keyMonitor = Substitute.For<IKeyMonitor>();
             keyMonitor.KeysObservable.Returns(keySubject);
 
-            var speechManager = new SpeechManager(clipboardMonitor, speech, keyMonitor, config);
+            var configStore = Substitute.For<IConfigPersistence>();
+
+            var speechManager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
 
             var text = "Just a test";
             textSubject.OnNext(text);
