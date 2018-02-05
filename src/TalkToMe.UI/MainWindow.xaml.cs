@@ -44,7 +44,8 @@ namespace TalkToMe.UI
                     new Dictionary<KeyInfo, CommandType>
                     {
                         { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
-                        { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak }
+                        { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
+                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute }
                     },
                     string.Empty,
                     string.Empty);

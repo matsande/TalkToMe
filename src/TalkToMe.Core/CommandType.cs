@@ -6,7 +6,7 @@
         None,
         ToggleAutoMode,
         Speak,
-        Mute,
+        ToggleMute,
         SwapLanguage
     }
 }

@@ -23,7 +23,7 @@ namespace TalkToMe.Core.Unittest
             var hotKeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
-                {new KeyInfo(Keys.B, Keys.None), CommandType.Mute }
+                {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
             var config = new Config(true, hotKeys, "SomeLang", "OtherLang");
 
@@ -48,7 +48,7 @@ namespace TalkToMe.Core.Unittest
             var hotKeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
-                {new KeyInfo(Keys.B, Keys.None), CommandType.Mute }
+                {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
             var configA = new Config(true, hotKeys, "SomeLang", "OtherLang");
             var newHotkeys = new Dictionary<KeyInfo, CommandType>

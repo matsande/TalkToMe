@@ -122,7 +122,7 @@
                         commandMap.Add(command, this.SwapLanguage);
                         break;
 
-                    case CommandType.Mute:
+                    case CommandType.ToggleMute:
                         commandMap.Add(command, this.ToggleMute);
                         break;
 
@@ -170,7 +170,7 @@
         /// </summary>
         private void SpeakLastText()
         {
-            if (!string.IsNullOrEmpty(this.lastText))
+            if (!this.muted && !string.IsNullOrEmpty(this.lastText))
             {
                 this.speech.Speak(this.lastText);
             }
