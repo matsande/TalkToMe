@@ -89,9 +89,16 @@
 
         private void OnClipboardChanged()
         {
-            if (Clipboard.ContainsText())
+            try
             {
-                this.textSubject.OnNext(Clipboard.GetText());
+                if (Clipboard.ContainsText())
+                {
+                    this.textSubject.OnNext(Clipboard.GetText());
+                }
+            }
+            catch (Exception)
+            {
+                // TODO: Trace
             }
         }
 
