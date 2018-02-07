@@ -182,8 +182,9 @@
         /// <param name="text">The <see cref="string"/></param>
         private void OnTextChanged(string text)
         {
+            var previousText = this.lastText;
             this.lastText = text;
-            if (this.config.AutoMode)
+            if (this.config.AutoMode && previousText != text)
             {
                 this.SpeakLastText();
             }

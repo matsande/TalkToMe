@@ -94,5 +94,33 @@ namespace TalkToMe.Core.Unittest
 
             speech.DidNotReceive().Speak(Arg.Any<string>());
         }
+
+        [Fact]
+        public void ShouldNotAutomaticallySpeakUnchangedText()
+        {
+            var hotKeys = new Dictionary<KeyInfo, CommandType>
+            {
+                { new KeyInfo(Keys.A, Keys.Shift), CommandType.ToggleMute },
+                { new KeyInfo(Keys.B, Keys.Shift), CommandType.Speak }
+            };
+
+            var config = new Config(true, hotKeys, "Test", "Test");
+            var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
+            var speech = Substitute.For<ISpeech>();
+            var keyMonitor = Substitute.For<IKeyMonitor>();
+            var configStore = Substitute.For<IConfigPersistence>();
+            var keySubject = new Subject<KeyInfo>();
+            var textSubject = new Subject<string>();
+
+            keyMonitor.KeysObservable.Returns(keySubject);
+            clipboardMonitor.ClipboardTextObservable.Returns(textSubject);
+
+            var speechmanager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
+
+            textSubject.OnNext("Test string");
+            textSubject.OnNext("Test string");
+
+            speech.Received(1).Speak(Arg.Any<string>());
+        }
     }
 }
