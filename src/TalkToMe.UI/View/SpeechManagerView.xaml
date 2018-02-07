@@ -8,22 +8,21 @@
   mc:Ignorable="d"
   d:DesignHeight="300"
   d:DesignWidth="300">
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top">
-      <CheckBox
-        IsChecked="{Binding AutoMode}">
-        <StackPanel>
-          <TextBlock
-            FontWeight="Bold">Auto Mode</TextBlock>
-          <TextBlock
-            Foreground="Gray">If activated, text will be spoken upon new text in the clipboard.</TextBlock>
-        </StackPanel>
-      </CheckBox>
-    </StackPanel>
-    <DockPanel
-      DockPanel.Dock="Top">
-      <ListView
-        ItemsSource="{Binding AvailableVoices}" />
-    </DockPanel>
-  </DockPanel>
+  <TabControl>
+    <TabControl.Items>
+
+      <TabItem
+        Header="General"
+        Content="{Binding GeneralView}">
+      </TabItem>
+      <TabItem
+        Header="Voice"
+        Content="{Binding VoiceView}">
+      </TabItem>
+      <TabItem
+        Header="Hotkeys"
+        Content="{Binding HotkeyView}">
+      </TabItem>
+    </TabControl.Items>
+  </TabControl>
 </UserControl>
