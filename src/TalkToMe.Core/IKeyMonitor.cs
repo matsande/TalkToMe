@@ -10,6 +10,8 @@ namespace TalkToMe.Core
         {
             get;
         }
+
+        IDisposable Override(Func<KeyInfo, bool> onKey);
     }
 
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]

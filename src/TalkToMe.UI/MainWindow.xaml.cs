@@ -52,22 +52,10 @@ namespace TalkToMe.UI
             }
 
             var hook = new HookKeyMonitor(config.Hotkeys.Keys, new StaticHookProvider());
-            // TODO: Remove
-            hook.KeysObservable.Subscribe(k =>
-            {
-                System.Diagnostics.Debug.Print($"Got key: {k}");
-            });
-
             var clipmon = new ClipboardTextMonitor(this);
-            // TODO: Remove
-            clipmon.ClipboardTextObservable.Subscribe(text =>
-            {
-                System.Diagnostics.Debug.Print($"Got clipboardtext: {text}");
-            });
-
             var speechManager = new SpeechManager(clipmon, new SpeechSynth(), hook, new LocalConfigPersistence(), config);
 
-            this.mainView.DataContext = new SpeechManagerViewModel(speechManager);
+            this.mainView.DataContext = new SpeechManagerViewModel(speechManager, hook);
         }
     }
 }

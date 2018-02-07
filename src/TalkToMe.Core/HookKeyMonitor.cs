@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Reactive.Disposables;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using System.Runtime.InteropServices;
@@ -15,6 +16,7 @@
         private readonly Subject<KeyInfo> keysSubject;
         private readonly IHookProvider hookProvider;
         private bool disposedValue = false; // To detect redundant calls
+        private Func<KeyInfo, bool> keyOverride;
 
         // TODO: Create an abstraction for the actual hook and create unittests.
         public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider)
@@ -26,6 +28,12 @@
         }
 
         public IObservable<KeyInfo> KeysObservable => this.keysSubject.AsObservable();
+
+        public IDisposable Override(Func<KeyInfo, bool> keyOverride)
+        {
+            this.keyOverride = keyOverride;
+            return Disposable.Create(() => this.keyOverride = null);
+        }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -62,7 +70,7 @@
 
             try
             {
-                if (keyCodes.WParam == (IntPtr)NativeMethods.WM_KEYDOWN)
+                if (keyCodes.WParam == (IntPtr)NativeMethods.WM_KEYDOWN || keyCodes.WParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN)
                 {
                     NativeMethods.KBDLLHOOKSTRUCT kbd = (NativeMethods.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(keyCodes.LParam, typeof(NativeMethods.KBDLLHOOKSTRUCT));
                     var vkCode = kbd.vkCode;
@@ -79,7 +87,13 @@
                         var modkey = GetModifierState();
                         //Debug.Print($"{key} With modifiers: {modkey}");
                         var keyInfo = new KeyInfo(key, modkey);
-                        if (this.observedKeys.Contains(keyInfo))
+                        var overrideHandler = this.keyOverride;
+
+                        if (overrideHandler != null)
+                        {
+                            handled = overrideHandler(keyInfo);
+                        }
+                        else if (this.observedKeys.Contains(keyInfo))
                         {
                             this.keysSubject.OnNext(keyInfo);
                             handled = true;
@@ -106,26 +120,36 @@
         private static bool IsModifier(Keys key)
         {
             return
-                key == Keys.ShiftKey ||
-                key == Keys.ControlKey ||
-                key == Keys.Menu || 
-                key == Keys.Alt || 
-                key == Keys.LWin || 
+                key == Keys.LShiftKey ||
+                key == Keys.RShiftKey ||
+                key == Keys.RControlKey ||
+                key == Keys.LControlKey ||
+                key == Keys.LMenu ||
+                key == Keys.RMenu ||
+                key == Keys.LWin ||
                 key == Keys.RWin;
         }
 
         private static Keys GetModifierState()
         {
+            Keys CheckModifierState(int vkCode, Keys target)
+            {
+                return (NativeMethods.GetAsyncKeyState(vkCode) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? target : 0;
+            }
+
             // TODO: Move GetKeyState to an abstraction so this can be tested
             Keys key = Keys.None;
-            key |= (NativeMethods.GetKeyState(NativeMethods.VK_SHIFT) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.Shift : 0;
-            key |= (NativeMethods.GetKeyState(NativeMethods.VK_CONTROL) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.Control : 0;
-            key |= (NativeMethods.GetKeyState(NativeMethods.VK_ALT) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.Alt : 0;
-            key |= (NativeMethods.GetKeyState(NativeMethods.VK_LWIN) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.LWin : 0;
-            key |= (NativeMethods.GetKeyState(NativeMethods.VK_RWIN) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? Keys.RWin : 0;
+            key |= CheckModifierState(NativeMethods.VK_LSHIFT, Keys.LShiftKey);
+            key |= CheckModifierState(NativeMethods.VK_RSHIFT, Keys.RShiftKey);
+            key |= CheckModifierState(NativeMethods.VK_LCONTROL, Keys.LControlKey);
+            key |= CheckModifierState(NativeMethods.VK_RCONTROL, Keys.RControlKey);
+            key |= CheckModifierState(NativeMethods.VK_ALT, Keys.Alt);
+            key |= CheckModifierState(NativeMethods.VK_LWIN, Keys.LWin);
+            key |= CheckModifierState(NativeMethods.VK_RWIN, Keys.RWin);
 
             return key;
         }
+
     }
 
     public struct KeyProcArgs

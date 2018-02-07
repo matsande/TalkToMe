@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using TalkToMe.Core;
@@ -9,21 +8,23 @@ namespace TalkToMe.UI.ViewModel
 {
     public class SpeechManagerViewModel : INotifyPropertyChanged
     {
-        public SpeechManagerViewModel(SpeechManager speechManager)
+        public SpeechManagerViewModel(SpeechManager speechManager, IKeyMonitor keyMonitor)
         {
             this.speechManager = speechManager;
-            this.generalView = new GeneralView(new GeneralViewModel(speechManager));
-            this.voiceView = new VoiceView(new VoiceViewModel(speechManager));
-            this.hotkeyView = new HotkeyView(new HotkeyViewModel(speechManager));
+            this.GeneralView = new GeneralView(new GeneralViewModel(speechManager));
+            this.VoiceView = new VoiceView(new VoiceViewModel(speechManager));
+            this.HotkeyView = new HotkeyView(new HotkeyViewModel(speechManager, keyMonitor));
 
             this.stateChangeSubscription = this.speechManager.StateChangeObservable.Subscribe(this.OnSpeechManagerStateChange);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public FrameworkElement GeneralView => this.generalView;
-        public FrameworkElement VoiceView => this.voiceView;
-        public FrameworkElement HotkeyView => this.hotkeyView;
+        public FrameworkElement GeneralView { get; }
+
+        public FrameworkElement VoiceView { get; }
+
+        public FrameworkElement HotkeyView { get; }
 
         private void OnSpeechManagerStateChange(SpeechManagerStateChange stateChange)
         {
@@ -35,9 +36,6 @@ namespace TalkToMe.UI.ViewModel
         }
 
         private readonly SpeechManager speechManager;
-        private readonly GeneralView generalView;
-        private readonly VoiceView voiceView;
-        private readonly HotkeyView hotkeyView;
         private readonly IDisposable stateChangeSubscription;
     }
 }

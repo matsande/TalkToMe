@@ -72,6 +72,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Control\HotKeySelection.xaml.cs">
+      <DependentUpon>HotKeySelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\GeneralViewModel.cs" />
     <Compile Include="ViewModel\HotkeyViewModel.cs" />
     <Compile Include="ViewModel\SpeechManagerViewModel.cs" />
@@ -89,6 +92,10 @@
     <Compile Include="View\VoiceView.xaml.cs">
       <DependentUpon>VoiceView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Control\HotKeySelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
