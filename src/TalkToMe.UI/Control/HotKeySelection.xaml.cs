@@ -82,7 +82,6 @@ namespace TalkToMe.UI.Control
 
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Debug.Print("Lost focus");
             this.keyOverride?.Dispose();
             this.keyOverride = null;
         }
