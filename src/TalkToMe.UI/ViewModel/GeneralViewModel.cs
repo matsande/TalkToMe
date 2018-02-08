@@ -18,13 +18,12 @@ namespace TalkToMe.UI.ViewModel
         {
             get
             {
-                return this.speechManager.AutoMode;
+                return this.speechManager.Config.AutoMode;
             }
 
             set
             {
-                //this.speechManager.UpdateConfig(this.speechManager.Config.With(autoMode: value));
-                this.speechManager.SetAutoMode(value);
+                this.speechManager.UpdateConfig(this.speechManager.Config.With(autoMode: value));
             }
         }
 
@@ -37,7 +36,7 @@ namespace TalkToMe.UI.ViewModel
 
         //    set
         //    {
-        //        this.speechManager.UpdateConfig(this.speechManager.Config.With(autoMode: value));
+        //        this.speechManager.UpdateConfig(this.speechManager.Config.With(mute: value));
         //    }
         //}
 

@@ -59,16 +59,14 @@
 
         public IObservable<SpeechManagerStateChange> StateChangeObservable => this.stateChangeSubject.AsObservable();
 
-        public bool AutoMode => this.config.AutoMode;
+        public Config Config => this.config;
 
-        public void SetAutoMode(bool automode)
+
+        public void UpdateConfig(Config config)
         {
-            if (this.config.AutoMode != automode)
-            {
-                this.config = this.config.With(autoMode: automode);
-                this.configPersistence.Save(this.config);
-                this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
-            }
+            this.config = config;
+            this.configPersistence.Save(this.config);
+            this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
         }
 
         public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
@@ -143,7 +141,7 @@
         /// </summary>
         private void ToggleAutoMode()
         {
-            this.SetAutoMode(!this.config.AutoMode);
+            this.UpdateConfig(this.config.With(autoMode: !this.config.AutoMode));
         }
 
         /// <summary>

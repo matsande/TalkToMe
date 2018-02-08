@@ -5,10 +5,6 @@ namespace TalkToMe.Core
 {
     public interface ISpeechManager
     {
-        bool AutoMode
-        {
-            get;
-        }
         IReadOnlyCollection<string> AvailableVoices
         {
             get;
@@ -18,6 +14,11 @@ namespace TalkToMe.Core
             get;
         }
 
-        void SetAutoMode(bool automode);
+        Config Config
+        {
+            get;
+        }
+
+        void UpdateConfig(Config config);
     }
 }
