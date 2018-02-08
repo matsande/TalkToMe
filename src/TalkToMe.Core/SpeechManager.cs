@@ -27,7 +27,7 @@
     /// <summary>
     /// Defines the <see cref="SpeechManager" />
     /// </summary>
-    public class SpeechManager : IDisposable
+    public class SpeechManager : IDisposable, ISpeechManager
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeechManager"/> class.

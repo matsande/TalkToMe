@@ -11,12 +11,7 @@ namespace TalkToMe.UI.View
         public HotkeyView()
         {
             InitializeComponent();
-        }
-
-        public HotkeyView(HotkeyViewModel hotkeyViewModel)
-        {
-            InitializeComponent();
-            this.DataContext = hotkeyViewModel;
+            this.DataContext = ViewModelResolver.Resolve<HotkeyViewModel>();
         }
     }
 }

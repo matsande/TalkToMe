@@ -34,7 +34,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TalkToMe.UI.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
@@ -75,6 +81,7 @@
     <Compile Include="Control\HotKeySelection.xaml.cs">
       <DependentUpon>HotKeySelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="ViewModel\GeneralViewModel.cs" />
     <Compile Include="ViewModel\HotkeyViewModel.cs" />
     <Compile Include="ViewModel\SpeechManagerViewModel.cs" />
@@ -89,6 +96,7 @@
     <Compile Include="View\SpeechManagerView.xaml.cs">
       <DependentUpon>SpeechManagerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ViewModelResolver.cs" />
     <Compile Include="View\VoiceView.xaml.cs">
       <DependentUpon>VoiceView.xaml</DependentUpon>
     </Compile>

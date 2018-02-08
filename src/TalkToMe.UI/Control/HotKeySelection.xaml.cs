@@ -58,7 +58,6 @@ namespace TalkToMe.UI.Control
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
             this.keyOverride?.Dispose();
-            //this.keysSubscription = this.KeyMonitor?.KeysObservable.Subscribe(this.OnKey);
             this.keyOverride = this.KeyMonitor?.Override(this.OnKey);
         }
 

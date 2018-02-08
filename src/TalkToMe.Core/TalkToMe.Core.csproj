@@ -71,6 +71,7 @@
     <Compile Include="IKeyMonitor.cs" />
     <Compile Include="InterceptKeys.cs" />
     <Compile Include="ISpeech.cs" />
+    <Compile Include="ISpeechManager.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpeechSynth.cs" />

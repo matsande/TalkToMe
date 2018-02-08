@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using TalkToMe.UI.ViewModel;
 
 namespace TalkToMe.UI.View
@@ -9,16 +8,10 @@ namespace TalkToMe.UI.View
     /// </summary>
     public partial class GeneralView : UserControl
     {
-        [Obsolete("Only for designer")]
         public GeneralView()
         {
             InitializeComponent();
-        }
-
-        public GeneralView(GeneralViewModel generalViewModel)
-        {
-            InitializeComponent();
-            this.DataContext = generalViewModel;
+            this.DataContext = ViewModelResolver.Resolve<GeneralViewModel>();
         }
     }
 }

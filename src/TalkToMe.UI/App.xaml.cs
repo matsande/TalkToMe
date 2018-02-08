@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using SimpleInjector;
 
 namespace TalkToMe.UI
 {
@@ -13,5 +9,18 @@ namespace TalkToMe.UI
     /// </summary>
     public partial class App : Application
     {
+        internal Container Container => this.container;
+
+        internal void SetContainer(Container container)
+        {
+            if (this.container != null)
+            {
+                throw new InvalidOperationException("Attempt to reassign container");
+            }
+
+            this.container = container;
+        }
+
+        private Container container = null;
     }
 }

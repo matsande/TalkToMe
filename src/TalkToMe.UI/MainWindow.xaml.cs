@@ -1,20 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TalkToMe.Core;
-using TalkToMe.UI.View;
 using TalkToMe.UI.ViewModel;
 
 namespace TalkToMe.UI
@@ -24,38 +10,18 @@ namespace TalkToMe.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        public MainWindow(SpeechManagerViewModel viewModel, IClipboardTextMonitor clipboardTextMonitor)
         {
             InitializeComponent();
+            this.DataContext = viewModel;
+            this.clipboardTextMonitor = clipboardTextMonitor;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
         {
-            this.BootStrap();
+            (this.clipboardTextMonitor as ClipboardTextMonitor)?.InstallClipboardHook(this);
         }
 
-        private void BootStrap()
-        {
-            var configPersistence = new LocalConfigPersistence();
-            if (!configPersistence.TryLoad(out var config))
-            {
-                config = new Config(
-                    true, 
-                    new Dictionary<KeyInfo, CommandType>
-                    {
-                        { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
-                        { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
-                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute }
-                    },
-                    string.Empty,
-                    string.Empty);
-            }
-
-            var hook = new HookKeyMonitor(config.Hotkeys.Keys, new StaticHookProvider());
-            var clipmon = new ClipboardTextMonitor(this);
-            var speechManager = new SpeechManager(clipmon, new SpeechSynth(), hook, new LocalConfigPersistence(), config);
-
-            this.mainView.DataContext = new SpeechManagerViewModel(speechManager, hook);
-        }
+        private readonly IClipboardTextMonitor clipboardTextMonitor;
     }
 }

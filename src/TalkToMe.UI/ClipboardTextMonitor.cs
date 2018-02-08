@@ -15,11 +15,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ClipboardTextMonitor"/> class.
         /// </summary>
-        /// <param name="window">The <see cref="Window"/></param>
-        public ClipboardTextMonitor(Window window)
+        public ClipboardTextMonitor()
         {
             this.textSubject = new Subject<string>();
-            this.windowHandle = SetupClipboardHook(window, WndProc);
         }
 
         /// <summary>
@@ -33,6 +31,11 @@
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        internal void InstallClipboardHook(Window window)
+        {
+            this.windowHandle = SetupClipboardHook(window, WndProc);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -104,7 +107,7 @@
 
         private readonly Subject<string> textSubject;
 
-        private readonly IntPtr windowHandle;
+        private IntPtr windowHandle;
 
         private bool disposedValue = false;
     }

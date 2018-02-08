@@ -1,9 +1,7 @@
 ﻿<Application x:Class="TalkToMe.UI.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:TalkToMe.UI"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:TalkToMe.UI">
     <Application.Resources>
-         
     </Application.Resources>
 </Application>

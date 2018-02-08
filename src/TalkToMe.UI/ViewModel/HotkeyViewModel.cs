@@ -5,7 +5,7 @@ namespace TalkToMe.UI.ViewModel
 {
     public class HotkeyViewModel : ViewModelBase
     {
-        public HotkeyViewModel(SpeechManager speechmanager, IKeyMonitor keyMonitor)
+        public HotkeyViewModel(ISpeechManager speechmanager, IKeyMonitor keyMonitor)
         {
             this.KeyMonitor = keyMonitor;
             this.speechManager = speechmanager;
@@ -16,6 +16,6 @@ namespace TalkToMe.UI.ViewModel
 
         public IKeyMonitor KeyMonitor { get; }
 
-        private readonly SpeechManager speechManager;
+        private readonly ISpeechManager speechManager;
     }
 }

@@ -11,12 +11,7 @@ namespace TalkToMe.UI.View
         public VoiceView()
         {
             InitializeComponent();
-        }
-
-        public VoiceView(VoiceViewModel voiceViewModel)
-        {
-            InitializeComponent();
-            this.DataContext = voiceViewModel;
+            this.DataContext = ViewModelResolver.Resolve<VoiceViewModel>();
         }
     }
 }

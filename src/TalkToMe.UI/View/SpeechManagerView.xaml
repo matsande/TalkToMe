@@ -12,16 +12,16 @@
     <TabControl.Items>
 
       <TabItem
-        Header="General"
-        Content="{Binding GeneralView}">
+        Header="General">
+        <local:GeneralView />
       </TabItem>
       <TabItem
-        Header="Voice"
-        Content="{Binding VoiceView}">
+        Header="Voice">
+        <local:VoiceView />
       </TabItem>
       <TabItem
-        Header="Hotkeys"
-        Content="{Binding HotkeyView}">
+        Header="Hotkeys">
+        <local:HotkeyView />
       </TabItem>
     </TabControl.Items>
   </TabControl>

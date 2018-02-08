@@ -6,7 +6,7 @@ namespace TalkToMe.UI.ViewModel
 {
     public class VoiceViewModel : ViewModelBase
     {
-        public VoiceViewModel(SpeechManager speechManager)
+        public VoiceViewModel(ISpeechManager speechManager)
         {
             this.speechManager = speechManager;
             this.speechManager.StateChangeObservable.Subscribe(_ =>
@@ -15,6 +15,6 @@ namespace TalkToMe.UI.ViewModel
         }
 
         public IReadOnlyCollection<string> AvailableVoices => this.speechManager.AvailableVoices;
-        private readonly SpeechManager speechManager;
+        private readonly ISpeechManager speechManager;
     }
 }
