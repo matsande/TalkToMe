@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using TalkToMe.Core;
+using TalkToMe.Core.Hook;
 
 namespace TalkToMe.UI.Control
 {

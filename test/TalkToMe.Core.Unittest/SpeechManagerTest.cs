@@ -2,6 +2,7 @@
 using System.Reactive.Subjects;
 using System.Windows.Forms;
 using NSubstitute;
+using TalkToMe.Core.Hook;
 using Xunit;
 
 namespace TalkToMe.Core.Unittest

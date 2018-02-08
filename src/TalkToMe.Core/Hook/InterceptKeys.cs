@@ -1,4 +1,4 @@
-﻿namespace TalkToMe.Core
+﻿namespace TalkToMe.Core.Hook
 {
     using System;
 

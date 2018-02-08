@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FluentAssertions;
+using TalkToMe.Core.Hook;
 using Xunit;
 
 namespace TalkToMe.Core.Unittest

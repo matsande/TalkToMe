@@ -1,5 +1,6 @@
 ﻿using System;
 using TalkToMe.Core;
+using TalkToMe.Core.Hook;
 
 namespace TalkToMe.UI.ViewModel
 {

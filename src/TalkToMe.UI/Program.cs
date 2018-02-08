@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using SimpleInjector;
 using TalkToMe.Core;
+using TalkToMe.Core.Hook;
 using TalkToMe.UI.View;
 using TalkToMe.UI.ViewModel;
 
@@ -42,6 +43,7 @@ namespace TalkToMe.UI
             container.Register<IClipboardTextMonitor, ClipboardTextMonitor>(Lifestyle.Singleton);
             container.Register<IHookProvider, StaticHookProvider>(Lifestyle.Singleton);
             container.Register<IKeyMonitor, HookKeyMonitor>(Lifestyle.Singleton);
+            container.Register<IModifierStateChecker, AsyncKeyStateModifierStateChecker>(Lifestyle.Singleton);
 
             container.RegisterSingleton<IConfigPersistence>(configPersistence);
 

@@ -65,11 +65,16 @@
   <ItemGroup>
     <Compile Include="CommandType.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="HookKeyMonitor.cs" />
+    <Compile Include="Hook\AsyncKeyStateModifierStateChecker.cs" />
+    <Compile Include="Hook\HookKeyMonitor.cs" />
+    <Compile Include="Hook\IHookProvider.cs" />
+    <Compile Include="Hook\IModifierStateChecker.cs" />
+    <Compile Include="Hook\KeyProcArgs.cs" />
+    <Compile Include="Hook\StaticHookProvider.cs" />
     <Compile Include="IClipboardTextMonitor.cs" />
     <Compile Include="IConfigPersistence.cs" />
-    <Compile Include="IKeyMonitor.cs" />
-    <Compile Include="InterceptKeys.cs" />
+    <Compile Include="Hook\IKeyMonitor.cs" />
+    <Compile Include="Hook\InterceptKeys.cs" />
     <Compile Include="ISpeech.cs" />
     <Compile Include="ISpeechManager.cs" />
     <Compile Include="NativeMethods.cs" />

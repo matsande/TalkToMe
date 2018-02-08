@@ -1,13 +1,12 @@
-﻿namespace TalkToMe.Core
+﻿using System;
+using System.Collections.Generic;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+namespace TalkToMe.Core.Hook
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Reactive.Disposables;
-    using System.Reactive.Linq;
-    using System.Reactive.Subjects;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
 
 
     public class HookKeyMonitor : IDisposable, IKeyMonitor
@@ -18,12 +17,12 @@
         private bool disposedValue = false; // To detect redundant calls
         private Func<KeyInfo, bool> keyOverride;
 
-        // TODO: Create an abstraction for the actual hook and create unittests.
-        public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider)
+        public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider, IModifierStateChecker modifierStateChecker)
         {
             this.observedKeys = new HashSet<KeyInfo>(observedKeys);
             this.keysSubject = new Subject<KeyInfo>();
             this.hookProvider = hookProvider;
+            this.modifierStateChecker = modifierStateChecker;
             this.hookProvider.Install(this.OnKeyEvent);
         }
 
@@ -130,67 +129,20 @@
                 key == Keys.RWin;
         }
 
-        private static Keys GetModifierState()
+        private Keys GetModifierState()
         {
-            Keys CheckModifierState(int vkCode, Keys target)
-            {
-                return (NativeMethods.GetAsyncKeyState(vkCode) & NativeMethods.HIGHORDER_KEYSTATE_BIT) > 0 ? target : 0;
-            }
-
-            // TODO: Move GetKeyState to an abstraction so this can be tested
-            Keys key = Keys.None;
-            key |= CheckModifierState(NativeMethods.VK_LSHIFT, Keys.LShiftKey);
-            key |= CheckModifierState(NativeMethods.VK_RSHIFT, Keys.RShiftKey);
-            key |= CheckModifierState(NativeMethods.VK_LCONTROL, Keys.LControlKey);
-            key |= CheckModifierState(NativeMethods.VK_RCONTROL, Keys.RControlKey);
-            key |= CheckModifierState(NativeMethods.VK_ALT, Keys.Alt);
-            key |= CheckModifierState(NativeMethods.VK_LWIN, Keys.LWin);
-            key |= CheckModifierState(NativeMethods.VK_RWIN, Keys.RWin);
+            var key = Keys.None;
+            key |= this.modifierStateChecker.GetModifierState(Keys.LShiftKey);
+            key |= this.modifierStateChecker.GetModifierState(Keys.RShiftKey);
+            key |= this.modifierStateChecker.GetModifierState(Keys.LControlKey);
+            key |= this.modifierStateChecker.GetModifierState(Keys.RControlKey);
+            key |= this.modifierStateChecker.GetModifierState(Keys.Alt);
+            key |= this.modifierStateChecker.GetModifierState(Keys.LWin);
+            key |= this.modifierStateChecker.GetModifierState(Keys.RWin);
 
             return key;
         }
 
-    }
-
-    public struct KeyProcArgs
-    {
-        public KeyProcArgs(int code, IntPtr wParam, IntPtr lParam)
-        {
-            this.Code = code;
-            this.WParam = wParam;
-            this.LParam = lParam;
-        }
-
-        public int Code
-        {
-            get;
-        }
-        public IntPtr WParam
-        {
-            get;
-        }
-        public IntPtr LParam
-        {
-            get;
-        }
-    }
-
-    public interface IHookProvider
-    {
-        void Install(Func<KeyProcArgs, bool> callback);
-        void Uninstall();
-    }
-
-    public class StaticHookProvider : IHookProvider
-    {
-        public void Install(Func<KeyProcArgs, bool> callback)
-        {
-            InterceptKeys.Initialize(callback);
-        }
-
-        public void Uninstall()
-        {
-            InterceptKeys.Cleanup();
-        }
+        private IModifierStateChecker modifierStateChecker;
     }
 }

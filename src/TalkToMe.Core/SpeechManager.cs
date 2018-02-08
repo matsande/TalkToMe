@@ -6,6 +6,7 @@
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using System.Windows.Forms;
+    using TalkToMe.Core.Hook;
 
     /*
     TODO:

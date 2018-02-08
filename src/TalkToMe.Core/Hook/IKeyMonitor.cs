@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
-namespace TalkToMe.Core
+namespace TalkToMe.Core.Hook
 {
     public interface IKeyMonitor
     {
