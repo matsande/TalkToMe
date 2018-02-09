@@ -11,7 +11,7 @@ namespace TalkToMe.Core.Hook
 
     public class HookKeyMonitor : IDisposable, IKeyMonitor
     {
-        private readonly HashSet<KeyInfo> observedKeys;
+        private HashSet<KeyInfo> observedKeys;
         private readonly Subject<KeyInfo> keysSubject;
         private readonly IHookProvider hookProvider;
         private bool disposedValue = false; // To detect redundant calls
@@ -32,6 +32,11 @@ namespace TalkToMe.Core.Hook
         {
             this.keyOverride = keyOverride;
             return Disposable.Create(() => this.keyOverride = null);
+        }
+
+        public void UpdateObservedKeys(IEnumerable<KeyInfo> observedKeys)
+        {
+            this.observedKeys = new HashSet<KeyInfo>(observedKeys);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -87,12 +92,13 @@ namespace TalkToMe.Core.Hook
                         //Debug.Print($"{key} With modifiers: {modkey}");
                         var keyInfo = new KeyInfo(key, modkey);
                         var overrideHandler = this.keyOverride;
+                        var targetKeys = this.observedKeys;
 
                         if (overrideHandler != null)
                         {
                             handled = overrideHandler(keyInfo);
                         }
-                        else if (this.observedKeys.Contains(keyInfo))
+                        else if (targetKeys.Contains(keyInfo))
                         {
                             this.keysSubject.OnNext(keyInfo);
                             handled = true;

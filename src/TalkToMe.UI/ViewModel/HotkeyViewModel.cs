@@ -24,6 +24,7 @@ namespace TalkToMe.UI.ViewModel
             // TODO: Do we need to add all commands but with Keys.None to the config, or should we store a default list somewhere?
             this.SupportedCommands = CreateSupportedCommands(this.speechManager.Config);
             this.ApplyCommand = new DelegateCommand(this.OnApply, this.CanApply);
+            this.ClearBindingCommand = new DelegateCommand<HotkeyItemViewModel>(this.OnClearBinding);
         }
 
         public IKeyMonitor KeyMonitor
@@ -40,6 +41,16 @@ namespace TalkToMe.UI.ViewModel
         public DelegateCommand ApplyCommand
         {
             get;
+        }
+
+        public DelegateCommand<HotkeyItemViewModel> ClearBindingCommand
+        {
+            get;
+        }
+
+        private void OnClearBinding(HotkeyItemViewModel vm)
+        {
+            vm.Key = KeyInfo.Empty;
         }
 
         private void OnApply()

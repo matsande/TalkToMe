@@ -14,16 +14,6 @@
   d:DataContext="{x:Type vm:HotkeyViewModel}">
   <DockPanel Background="LightGray" LastChildFill="False">
     <StackPanel DockPanel.Dock="Top">
-      <!--<StackPanel
-        Orientation="Horizontal">
-        <TextBlock>Speak</TextBlock>
-        <control:HotKeySelection KeyMonitor="{Binding KeyMonitor, Mode=OneWay}" MinWidth="200" />
-      </StackPanel>
-      <StackPanel
-        Orientation="Horizontal">
-        <TextBlock>Auto Mode</TextBlock>
-        <control:HotKeySelection KeyMonitor="{Binding KeyMonitor, Mode=OneWay}" MinWidth="200" />
-      </StackPanel>-->
       <ListView ItemsSource="{Binding SupportedCommands}" x:Name="commandList">
         <ListView.ItemTemplate>
           <DataTemplate
@@ -36,6 +26,10 @@
                 KeyMonitor="{Binding DataContext.KeyMonitor, Mode=OneWay, ElementName=commandList}"
                 SelectedHotkey="{Binding Key, Mode=TwoWay}"
                 MinWidth="200" />
+              <Button
+                Command="{Binding DataContext.ClearBindingCommand, ElementName=commandList}"
+                CommandParameter="{Binding}"
+                Content="Clear"/>
             </StackPanel>
           </DataTemplate>
         </ListView.ItemTemplate>

@@ -55,9 +55,16 @@ namespace TalkToMe.UI.Control
 
         private static string FormatKeyText(KeyInfo keyInfo)
         {
-            return keyInfo.Modifier == System.Windows.Forms.Keys.None
-                ? keyInfo.Key.ToString()
-                : $"{keyInfo.Key} + {keyInfo.Modifier}";
+            if (keyInfo == KeyInfo.Empty)
+            {
+                return "<no key assigned>";
+            }
+            else
+            {
+                return keyInfo.Modifier == System.Windows.Forms.Keys.None
+                    ? keyInfo.Key.ToString()
+                    : $"{keyInfo.Key} + {keyInfo.Modifier}";
+            }
         }
 
         private void OnGotFocus(object sender, RoutedEventArgs e)

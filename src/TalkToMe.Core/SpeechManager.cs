@@ -68,6 +68,9 @@
             this.config = config;
             this.configPersistence.Save(this.config);
             this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
+
+            // Note: This could be optimized a bit, for now though, always update.
+            this.keyMonitor.UpdateObservedKeys(config.Hotkeys.Select(x => x.Key));
         }
 
         public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
