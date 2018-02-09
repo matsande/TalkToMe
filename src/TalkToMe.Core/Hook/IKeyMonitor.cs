@@ -43,6 +43,8 @@ namespace TalkToMe.Core.Hook
                 : false;
         }
 
+        public static readonly KeyInfo Empty = new KeyInfo(Keys.None, Keys.None);
+
         [JsonProperty]
         private readonly Keys key;
 
