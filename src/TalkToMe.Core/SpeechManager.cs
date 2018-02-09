@@ -150,8 +150,8 @@
         /// </summary>
         private void ToggleMute()
         {
-            this.muted = !this.muted;
-            if (this.muted)
+            this.UpdateConfig(this.config.With(mute: !this.config.Mute));
+            if (this.config.Mute)
             {
                 this.speech.Abort();
             }
@@ -169,7 +169,7 @@
         /// </summary>
         private void SpeakLastText()
         {
-            if (!this.muted && !string.IsNullOrEmpty(this.lastText))
+            if (!this.config.Mute && !string.IsNullOrEmpty(this.lastText))
             {
                 this.speech.Speak(this.lastText);
             }
@@ -224,8 +224,6 @@
 
         private string lastText;
         private bool disposedValue = false;// To detect redundant calls
-
-        private bool muted;
     }
 
     public class SpeechManagerStateChange

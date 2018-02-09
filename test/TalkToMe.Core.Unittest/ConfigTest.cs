@@ -26,7 +26,7 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
-            var config = new Config(true, hotKeys, "SomeLang", "OtherLang");
+            var config = new Config(true, false, hotKeys, "SomeLang", "OtherLang");
 
             Config newConfig;
             using (var ms = new MemoryStream())
@@ -51,7 +51,7 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
-            var configA = new Config(true, hotKeys, "SomeLang", "OtherLang");
+            var configA = new Config(true, false, hotKeys, "SomeLang", "OtherLang");
             var newHotkeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.C, Keys.None), CommandType.SwapLanguage }

@@ -30,6 +30,7 @@ namespace TalkToMe.UI
             {
                 config = new Config(
                     true,
+                    false,
                     new Dictionary<KeyInfo, CommandType>
                     {
                         { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },

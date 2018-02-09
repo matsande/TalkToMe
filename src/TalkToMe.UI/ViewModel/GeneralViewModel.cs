@@ -11,6 +11,7 @@ namespace TalkToMe.UI.ViewModel
             this.speechManager.StateChangeObservable.Subscribe(_ =>
             {
                 this.RaisePropertyChanged(nameof(this.AutoMode));
+                this.RaisePropertyChanged(nameof(this.Mute));
             });
         }
 
@@ -27,18 +28,18 @@ namespace TalkToMe.UI.ViewModel
             }
         }
 
-        //public bool Mute
-        //{
-        //    get
-        //    {
-        //        return this.speechManager.Mute;
-        //    }
+        public bool Mute
+        {
+            get
+            {
+                return this.speechManager.Config.Mute;
+            }
 
-        //    set
-        //    {
-        //        this.speechManager.UpdateConfig(this.speechManager.Config.With(mute: value));
-        //    }
-        //}
+            set
+            {
+                this.speechManager.UpdateConfig(this.speechManager.Config.With(mute: value));
+            }
+        }
 
         private readonly ISpeechManager speechManager;
     }

@@ -19,7 +19,7 @@
                   Foreground="Gray">If activated, text will be spoken upon new text in the clipboard.</TextBlock>
               </StackPanel>
             </CheckBox>
-            <!--<CheckBox
+            <CheckBox
               IsChecked="{Binding Mute}">
               <StackPanel>
                 <TextBlock
@@ -27,7 +27,7 @@
                 <TextBlock
                   Foreground="Gray">If checked, will stop all further sound.</TextBlock>
               </StackPanel>
-            </CheckBox>-->
+            </CheckBox>
           </StackPanel>
           
         </DockPanel>
