@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -19,7 +20,7 @@ namespace TalkToMe.Core.Hook
 
         public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider, IModifierStateChecker modifierStateChecker)
         {
-            this.observedKeys = new HashSet<KeyInfo>(observedKeys);
+            this.UpdateObservedKeys(observedKeys);
             this.keysSubject = new Subject<KeyInfo>();
             this.hookProvider = hookProvider;
             this.modifierStateChecker = modifierStateChecker;
@@ -36,7 +37,7 @@ namespace TalkToMe.Core.Hook
 
         public void UpdateObservedKeys(IEnumerable<KeyInfo> observedKeys)
         {
-            this.observedKeys = new HashSet<KeyInfo>(observedKeys);
+            this.observedKeys = new HashSet<KeyInfo>(observedKeys.Where(k => k != KeyInfo.Empty));
         }
 
         protected virtual void Dispose(bool disposing)
