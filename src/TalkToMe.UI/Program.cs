@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using SimpleInjector;
 using TalkToMe.Core;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Voice;
 using TalkToMe.UI.View;
 using TalkToMe.UI.ViewModel;
 
@@ -37,8 +38,8 @@ namespace TalkToMe.UI
                         { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
                         { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute }
                     },
-                    string.Empty,
-                    string.Empty);
+                    VoiceDescriptor.Empty,
+                    VoiceDescriptor.Empty);
             }
 
             container.Register<IClipboardTextMonitor, ClipboardTextMonitor>(Lifestyle.Singleton);

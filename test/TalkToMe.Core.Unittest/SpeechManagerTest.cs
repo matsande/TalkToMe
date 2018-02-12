@@ -3,6 +3,7 @@ using System.Reactive.Subjects;
 using System.Windows.Forms;
 using NSubstitute;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Voice;
 using Xunit;
 
 namespace TalkToMe.Core.Unittest
@@ -17,7 +18,9 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.A, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(false, false, hotKeys, "TestLang", "OtherLang");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(false, false, hotKeys, vd1, vd2);
             
             var keySubject = new Subject<KeyInfo>();
             var textSubject = new Subject<string>();
@@ -49,7 +52,9 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.A, Keys.Shift), CommandType.ToggleMute }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
             var speech = Substitute.For<ISpeech>();
             var keyMonitor = Substitute.For<IKeyMonitor>();
@@ -73,7 +78,9 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.B, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
             var speech = Substitute.For<ISpeech>();
             var keyMonitor = Substitute.For<IKeyMonitor>();
@@ -105,7 +112,9 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.B, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
             var speech = Substitute.For<ISpeech>();
             var keyMonitor = Substitute.For<IKeyMonitor>();
