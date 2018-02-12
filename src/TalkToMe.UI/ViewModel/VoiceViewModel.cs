@@ -14,7 +14,7 @@ namespace TalkToMe.UI.ViewModel
             });
         }
 
-        public IReadOnlyCollection<string> AvailableVoices => this.speechManager.AvailableVoices;
+        public IReadOnlyCollection<string> AvailableVoices => new List<string>(); // TODO: restore this.speechManager.AvailableVoices;
         private readonly ISpeechManager speechManager;
     }
 }

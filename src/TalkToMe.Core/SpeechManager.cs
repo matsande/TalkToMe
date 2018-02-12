@@ -7,6 +7,7 @@
     using System.Reactive.Subjects;
     using System.Windows.Forms;
     using TalkToMe.Core.Hook;
+    using TalkToMe.Core.Voice;
 
     /*
     TODO:
@@ -40,22 +41,42 @@
         /// <param name="config">The <see cref="Config"/></param>
         public SpeechManager(
             IClipboardTextMonitor clipboardMonitor,
-            ISpeech speech,
+            IVoiceFactory voiceFactory,
             IKeyMonitor keyMonitor,
             IConfigPersistence configPersistence,
             Config config)
         {
             this.clipboardMonitor = clipboardMonitor;
-            this.speech = speech;
+            this.voiceFactory = voiceFactory;
             this.keyMonitor = keyMonitor;
             this.configPersistence = configPersistence;
             this.config = config;
 
+            this.InitializeVoices();
             this.commandMap = this.InitializeCommands(config);
 
             this.clipboardSubscription = this.clipboardMonitor.ClipboardTextObservable.Subscribe(this.OnTextChanged);
             this.keySubscription = this.keyMonitor.KeysObservable.Subscribe(this.OnKeyPressed);
             this.stateChangeSubject = new Subject<SpeechManagerStateChange>();
+        }
+
+        private IVoice primaryVoice;
+        private IVoice secondaryVoice;
+
+        private void InitializeVoices()
+        {
+            if (!this.voiceFactory.TryCreate(this.config.PrimaryVoice, out this.primaryVoice))
+            {
+                this.primaryVoice = this.voiceFactory.CreateDefault();
+            }
+
+            if (!this.voiceFactory.TryCreate(this.config.SecondaryVoice, out this.secondaryVoice))
+            {
+                this.secondaryVoice = this.voiceFactory.CreateDefault();
+            }
+
+            // TODO: Should we persist the last selected voice?
+            this.currentVoice = this.primaryVoice;
         }
 
         public IObservable<SpeechManagerStateChange> StateChangeObservable => this.stateChangeSubject.AsObservable();
@@ -73,7 +94,7 @@
             this.keyMonitor.UpdateObservedKeys(config.Hotkeys.Select(x => x.Key));
         }
 
-        public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
+        // TODO: Restore support for this public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
 
         // This code added to correctly implement the disposable pattern.
         /// <summary>
@@ -156,7 +177,7 @@
             this.UpdateConfig(this.config.With(mute: !this.config.Mute));
             if (this.config.Mute)
             {
-                this.speech.Abort();
+                this.currentVoice.Abort();
             }
         }
 
@@ -174,7 +195,7 @@
         {
             if (!this.config.Mute && !string.IsNullOrEmpty(this.lastText))
             {
-                this.speech.Speak(this.lastText);
+                this.currentVoice.Speak(this.lastText);
             }
         }
 
@@ -210,9 +231,7 @@
         }
 
         private readonly IClipboardTextMonitor clipboardMonitor;
-
-        private readonly ISpeech speech;
-
+        private readonly IVoiceFactory voiceFactory;
         private readonly IKeyMonitor keyMonitor;
 
         private readonly IConfigPersistence configPersistence;
@@ -222,10 +241,15 @@
         private readonly IDisposable clipboardSubscription;
 
         private readonly IDisposable keySubscription;
+
         private readonly Subject<SpeechManagerStateChange> stateChangeSubject;
+
         private Config config;
 
         private string lastText;
+
+        private IVoice currentVoice;
+
         private bool disposedValue = false;// To detect redundant calls
     }
 

@@ -9,7 +9,7 @@
             switch (voiceDescriptor.Provider)
             {
                 case VoiceProvider.SystemSpeech:
-                    SystemSpeechVoice.TryCreate(voiceDescriptor.VoiceName, out voice);
+                    SystemSpeechVoice.TryCreate(voiceDescriptor, out voice);
                     break;
                 //case VoiceProvider.MicrosoftSpeech:
                 //    MicrosoftSpeechVoice.TryCreate(voiceDescriptor.VoiceName, out voice);
@@ -20,6 +20,11 @@
             }
 
             return voice != null;
+        }
+
+        public IVoice CreateDefault()
+        {
+            return SystemSpeechVoice.CreateDefault();
         }
     }
 }

@@ -15,11 +15,10 @@ namespace TalkToMe.Core.Voice
             this.voiceName = voiceName;
         }
 
+        public static VoiceDescriptor Empty => empty;
         public VoiceProvider Provider => this.provider;
 
         public string VoiceName => this.voiceName;
-
-        public static VoiceDescriptor Empty => empty;
 
         public override bool Equals(object obj)
         {
@@ -41,12 +40,12 @@ namespace TalkToMe.Core.Voice
             return hashCode;
         }
 
+        private static readonly VoiceDescriptor empty = new VoiceDescriptor(VoiceProvider.None, string.Empty);
+
         [JsonProperty]
         private readonly VoiceProvider provider;
 
         [JsonProperty]
         private readonly string voiceName;
-
-        private static readonly VoiceDescriptor empty = new VoiceDescriptor(VoiceProvider.None, string.Empty);
     }
 }
