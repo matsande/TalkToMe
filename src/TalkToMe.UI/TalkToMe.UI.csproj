@@ -82,7 +82,11 @@
       <DependentUpon>HotKeySelection.xaml</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Common\DelegateCommand.cs" />
+    <Compile Include="Common\DelegateCommand.Generic.cs" />
+    <Compile Include="Common\DelegateCommandBase.cs" />
     <Compile Include="ViewModel\GeneralViewModel.cs" />
+    <Compile Include="ViewModel\HotkeyItemViewModel.cs" />
     <Compile Include="ViewModel\HotkeyViewModel.cs" />
     <Compile Include="ViewModel\SpeechManagerViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />

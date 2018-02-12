@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -11,7 +12,7 @@ namespace TalkToMe.Core.Hook
 
     public class HookKeyMonitor : IDisposable, IKeyMonitor
     {
-        private readonly HashSet<KeyInfo> observedKeys;
+        private HashSet<KeyInfo> observedKeys;
         private readonly Subject<KeyInfo> keysSubject;
         private readonly IHookProvider hookProvider;
         private bool disposedValue = false; // To detect redundant calls
@@ -19,7 +20,7 @@ namespace TalkToMe.Core.Hook
 
         public HookKeyMonitor(IEnumerable<KeyInfo> observedKeys, IHookProvider hookProvider, IModifierStateChecker modifierStateChecker)
         {
-            this.observedKeys = new HashSet<KeyInfo>(observedKeys);
+            this.UpdateObservedKeys(observedKeys);
             this.keysSubject = new Subject<KeyInfo>();
             this.hookProvider = hookProvider;
             this.modifierStateChecker = modifierStateChecker;
@@ -32,6 +33,11 @@ namespace TalkToMe.Core.Hook
         {
             this.keyOverride = keyOverride;
             return Disposable.Create(() => this.keyOverride = null);
+        }
+
+        public void UpdateObservedKeys(IEnumerable<KeyInfo> observedKeys)
+        {
+            this.observedKeys = new HashSet<KeyInfo>(observedKeys.Where(k => k != KeyInfo.Empty));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -87,12 +93,13 @@ namespace TalkToMe.Core.Hook
                         //Debug.Print($"{key} With modifiers: {modkey}");
                         var keyInfo = new KeyInfo(key, modkey);
                         var overrideHandler = this.keyOverride;
+                        var targetKeys = this.observedKeys;
 
                         if (overrideHandler != null)
                         {
                             handled = overrideHandler(keyInfo);
                         }
-                        else if (this.observedKeys.Contains(keyInfo))
+                        else if (targetKeys.Contains(keyInfo))
                         {
                             this.keysSubject.OnNext(keyInfo);
                             handled = true;

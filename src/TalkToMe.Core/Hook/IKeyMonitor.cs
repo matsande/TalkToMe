@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
@@ -10,6 +11,8 @@ namespace TalkToMe.Core.Hook
         {
             get;
         }
+
+        void UpdateObservedKeys(IEnumerable<KeyInfo> observedkeys);
 
         IDisposable Override(Func<KeyInfo, bool> onKey);
     }
@@ -42,6 +45,8 @@ namespace TalkToMe.Core.Hook
                 ? this.Equals(other)
                 : false;
         }
+
+        public static readonly KeyInfo Empty = new KeyInfo(Keys.None, Keys.None);
 
         [JsonProperty]
         private readonly Keys key;

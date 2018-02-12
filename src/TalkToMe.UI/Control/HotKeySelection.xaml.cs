@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using TalkToMe.Core;
 using TalkToMe.Core.Hook;
 
 namespace TalkToMe.UI.Control
@@ -32,28 +31,40 @@ namespace TalkToMe.UI.Control
         {
             get
             {
-                return this.selectedHotkey;
+                return (KeyInfo)GetValue(SelectedHotkeyProperty);
             }
             set
             {
-                // TODO: This means we should change modifiers to be a list, will be easier to manage really.
-                this.keyTextBox.Text = FormatKeyText(value);
-                this.selectedHotkey = value;
+                SetValue(SelectedHotkeyProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedHotkeyProperty =
+            DependencyProperty.Register("SelectedHotkey", typeof(KeyInfo), typeof(HotKeySelection), new FrameworkPropertyMetadata(null, OnSelectedHotkeyChanged));
+
+        private static void OnSelectedHotkeyChanged(DependencyObject d, DependencyPropertyChangedEventArgs eventArgs)
+        {
+            if (d is HotKeySelection self)
+            {
+                self.keyTextBox.Text = FormatKeyText((KeyInfo)eventArgs.NewValue);
             }
         }
 
         public static readonly DependencyProperty KeyMonitorProperty =
-                    DependencyProperty.Register(
-                "KeyMonitor",
-                typeof(IKeyMonitor),
-                typeof(HotKeySelection),
-                new FrameworkPropertyMetadata(null));
+            DependencyProperty.Register("KeyMonitor", typeof(IKeyMonitor), typeof(HotKeySelection), new FrameworkPropertyMetadata(null));
 
         private static string FormatKeyText(KeyInfo keyInfo)
         {
-            return keyInfo.Modifier == System.Windows.Forms.Keys.None
-                ? keyInfo.Key.ToString()
-                : $"{keyInfo.Key} + {keyInfo.Modifier}";
+            if (keyInfo == KeyInfo.Empty)
+            {
+                return "<no key assigned>";
+            }
+            else
+            {
+                return keyInfo.Modifier == System.Windows.Forms.Keys.None
+                    ? keyInfo.Key.ToString()
+                    : $"{keyInfo.Key} + {keyInfo.Modifier}";
+            }
         }
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
@@ -86,7 +97,6 @@ namespace TalkToMe.UI.Control
             this.keyOverride = null;
         }
 
-        private KeyInfo selectedHotkey;
         private IDisposable keyOverride;
     }
 }

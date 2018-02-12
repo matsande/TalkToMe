@@ -40,6 +40,8 @@ namespace TalkToMe.Core.Unittest
         [Theory]
         [InlineData(Keys.A, Keys.None)]
         [InlineData(Keys.Z, Keys.None)]
+        [InlineData(Keys.A, Keys.LWin)]
+        [InlineData(Keys.G, Keys.LShiftKey)]
         public void ShouldDispatchSubscribedKeys(Keys key, Keys modifier)
         {
             Func<KeyProcArgs, bool> keyProc = null;
@@ -47,8 +49,9 @@ namespace TalkToMe.Core.Unittest
             var hookProvider = Substitute.For<IHookProvider>();
             hookProvider.Install(Arg.Do<Func<KeyProcArgs, bool>>(x => keyProc = x));
             var modChecker = Substitute.For<IModifierStateChecker>();
+            modChecker.GetModifierState(Arg.Any<Keys>()).Returns(modifier);
 
-            var mon = new HookKeyMonitor(new List<KeyInfo> { new KeyInfo(key, Keys.None) }, hookProvider, modChecker);
+            var mon = new HookKeyMonitor(new List<KeyInfo> { new KeyInfo(key, modifier) }, hookProvider, modChecker);
             mon.KeysObservable.Subscribe(info => receivedKey = info);
 
             UseHookStructWith(key, ptr => keyProc(new KeyProcArgs(0, (IntPtr)NativeMethods.WM_KEYDOWN, ptr)));

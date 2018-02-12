@@ -6,26 +6,41 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:TalkToMe.UI.View"
   xmlns:control="clr-namespace:TalkToMe.UI.Control"
+  xmlns:vm="clr-namespace:TalkToMe.UI.ViewModel"
+  xmlns:hk="clr-namespace:TalkToMe.Core.Hook;assembly=TalkToMe.Core"
   mc:Ignorable="d"
   d:DesignHeight="300"
-  d:DesignWidth="300">
+  d:DesignWidth="300"
+  d:DataContext="{x:Type vm:HotkeyViewModel}">
   <DockPanel Background="LightGray" LastChildFill="False">
     <StackPanel DockPanel.Dock="Top">
-      <StackPanel
-        Orientation="Horizontal">
-        <TextBlock>Speak</TextBlock>
-        <control:HotKeySelection KeyMonitor="{Binding KeyMonitor, Mode=OneWay}" MinWidth="200" />
-      </StackPanel>
-      <StackPanel
-        Orientation="Horizontal">
-        <TextBlock>Auto Mode</TextBlock>
-        <control:HotKeySelection KeyMonitor="{Binding KeyMonitor, Mode=OneWay}" MinWidth="200" />
-      </StackPanel>
+      <ListView ItemsSource="{Binding SupportedCommands}" x:Name="commandList">
+        <ListView.ItemTemplate>
+          <DataTemplate
+            DataType="{x:Type hk:KeyInfoAndCommand}">
+            <StackPanel
+              Orientation="Horizontal">
+              <TextBlock
+                Text="{Binding Command}" />
+              <control:HotKeySelection
+                KeyMonitor="{Binding DataContext.KeyMonitor, Mode=OneWay, ElementName=commandList}"
+                SelectedHotkey="{Binding Key, Mode=TwoWay}"
+                MinWidth="200" />
+              <Button
+                Command="{Binding DataContext.ClearBindingCommand, ElementName=commandList}"
+                CommandParameter="{Binding}"
+                Content="Clear"/>
+            </StackPanel>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
     </StackPanel>
     <DockPanel
       DockPanel.Dock="Bottom">
       <Button
         Content="Apply"
+        Command="{Binding ApplyCommand}"
         DockPanel.Dock="Right" />
     </DockPanel>
   </DockPanel>
