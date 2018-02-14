@@ -174,11 +174,11 @@
         /// </summary>
         private void ToggleMute()
         {
-            this.UpdateConfig(this.config.With(mute: !this.config.Mute));
-            if (this.config.Mute)
+            if (!this.config.Mute)
             {
                 this.currentVoice.Abort();
             }
+            this.UpdateConfig(this.config.With(mute: !this.config.Mute));
         }
 
         /// <summary>
