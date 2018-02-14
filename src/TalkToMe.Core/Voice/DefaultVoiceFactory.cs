@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TalkToMe.Core.Voice
 {
@@ -13,10 +14,9 @@ namespace TalkToMe.Core.Voice
                 case VoiceProvider.SystemSpeech:
                     SystemSpeechVoice.TryCreate(voiceDescriptor, out voice);
                     break;
-                // TODO: Add support
-                //case VoiceProvider.MicrosoftSpeech:
-                //    MicrosoftSpeechVoice.TryCreate(voiceDescriptor.VoiceName, out voice);
-                //    break;
+                case VoiceProvider.MicrosoftSpeech:
+                    MicrosoftSpeechVoice.TryCreate(voiceDescriptor, out voice);
+                    break;
                 default:
                     // TODO: Trace
                     break;
@@ -34,8 +34,9 @@ namespace TalkToMe.Core.Voice
         {
             get
             {
-                // TODO: Concat with MicrosoftSpeechVoice.GetAvailableVoices();
-                return SystemSpeechVoice.GetAvailableVoices();
+                return SystemSpeechVoice.GetAvailableVoices()
+                    .Concat(MicrosoftSpeechVoice.GetAvailableVoices())
+                    .ToList();
             }
         }
     }
