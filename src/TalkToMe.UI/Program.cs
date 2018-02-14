@@ -36,7 +36,8 @@ namespace TalkToMe.UI
                     {
                         { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
                         { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
-                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute }
+                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute },
+                        { new KeyInfo(Keys.W, Keys.LWin), CommandType.SwapLanguage }
                     },
                     VoiceDescriptor.Empty,
                     VoiceDescriptor.Empty);

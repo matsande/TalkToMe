@@ -60,41 +60,23 @@
             this.stateChangeSubject = new Subject<SpeechManagerStateChange>();
         }
 
-        private IVoice primaryVoice;
-        private IVoice secondaryVoice;
-
-        private void InitializeVoices()
-        {
-            if (!this.voiceFactory.TryCreate(this.config.PrimaryVoice, out this.primaryVoice))
-            {
-                this.primaryVoice = this.voiceFactory.CreateDefault();
-            }
-
-            if (!this.voiceFactory.TryCreate(this.config.SecondaryVoice, out this.secondaryVoice))
-            {
-                this.secondaryVoice = this.voiceFactory.CreateDefault();
-            }
-
-            // TODO: Should we persist the last selected voice?
-            this.currentVoice = this.primaryVoice;
-        }
-
         public IObservable<SpeechManagerStateChange> StateChangeObservable => this.stateChangeSubject.AsObservable();
-
         public Config Config => this.config;
 
+        // TODO: Rework this a bit, should not be able to return null
+        public VoiceDescriptor CurrentVoice => this.currentVoice?.Descriptor;
 
         public void UpdateConfig(Config config)
         {
             this.config = config;
             this.configPersistence.Save(this.config);
-            this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
 
             // Note: This could be optimized a bit, for now though, always update.
             this.keyMonitor.UpdateObservedKeys(config.Hotkeys.Select(x => x.Key));
-        }
+            this.InitializeVoices();
 
-        // TODO: Restore support for this public IReadOnlyCollection<string> AvailableVoices => this.speech.AvailableVoices;
+            this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
+        }
 
         // This code added to correctly implement the disposable pattern.
         /// <summary>
@@ -104,6 +86,8 @@
         {
             Dispose(true);
         }
+
+        public IReadOnlyCollection<VoiceDescriptor> AvailableVoices => this.voiceFactory.AvailableVoices;
 
         /// <summary>
         /// The Dispose
@@ -122,6 +106,22 @@
 
                 disposedValue = true;
             }
+        }
+
+        private void InitializeVoices()
+        {
+            if (!this.voiceFactory.TryCreate(this.config.PrimaryVoice, out this.primaryVoice))
+            {
+                this.primaryVoice = this.voiceFactory.CreateDefault();
+            }
+
+            if (!this.voiceFactory.TryCreate(this.config.SecondaryVoice, out this.secondaryVoice))
+            {
+                this.secondaryVoice = this.voiceFactory.CreateDefault();
+            }
+
+            // TODO: Should we persist the last selected voice?
+            this.currentVoice = this.primaryVoice;
         }
 
         /// <summary>
@@ -186,6 +186,16 @@
         /// </summary>
         private void SwapLanguage()
         {
+            if (this.currentVoice.Descriptor == this.primaryVoice.Descriptor)
+            {
+                this.currentVoice = this.secondaryVoice;
+            }
+            else
+            {
+                this.currentVoice = this.primaryVoice;
+            }
+
+            this.stateChangeSubject.OnNext(new SpeechManagerStateChange());
         }
 
         /// <summary>
@@ -233,17 +243,13 @@
         private readonly IClipboardTextMonitor clipboardMonitor;
         private readonly IVoiceFactory voiceFactory;
         private readonly IKeyMonitor keyMonitor;
-
         private readonly IConfigPersistence configPersistence;
-
         private readonly Dictionary<CommandType, Action> commandMap;
-
         private readonly IDisposable clipboardSubscription;
-
         private readonly IDisposable keySubscription;
-
         private readonly Subject<SpeechManagerStateChange> stateChangeSubject;
-
+        private IVoice primaryVoice;
+        private IVoice secondaryVoice;
         private Config config;
 
         private string lastText;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Speech.Synthesis;
 
@@ -42,6 +43,15 @@ namespace TalkToMe.Core.Voice
         private SystemSpeechVoice(SpeechSynthesizer speechSynthesizer)
             : this(speechSynthesizer, null)
         {
+        }
+
+        internal static IReadOnlyCollection<VoiceDescriptor> GetAvailableVoices()
+        {
+            var speech = new SpeechSynthesizer();
+            return speech.GetInstalledVoices()
+                .Where(voice => voice.Enabled)
+                .Select(voice => new VoiceDescriptor(VoiceProvider.SystemSpeech, voice.VoiceInfo.Name))
+                .ToList();
         }
 
         private SystemSpeechVoice(SpeechSynthesizer speechSynthesizer, VoiceDescriptor descriptor)

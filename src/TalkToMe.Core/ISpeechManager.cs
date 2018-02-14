@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using TalkToMe.Core.Voice;
 
 namespace TalkToMe.Core
 {
     public interface ISpeechManager
     {
-        //TODO: Restore IReadOnlyCollection<string> AvailableVoices { get; }
+        VoiceDescriptor CurrentVoice { get; }
+        IReadOnlyCollection<VoiceDescriptor> AvailableVoices { get; }
         IObservable<SpeechManagerStateChange> StateChangeObservable { get; }
         Config Config { get; }
 
