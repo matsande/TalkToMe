@@ -56,7 +56,18 @@ namespace TalkToMe.UI
             // Note: temporary, refactor SpeechManager to only use IConfigPersistence or something aggregating that interface.
             container.RegisterSingleton<Config>(config);
 
-            container.Register<IVoiceFactory, DefaultVoiceFactory>(Lifestyle.Singleton);
+            var voiceFactories = new List<IVoiceFactory>
+            {
+                new SystemSpeechVoiceFactory()
+            };
+
+            if (MicrosoftSpeechVoiceFactory.IsSupported)
+            {
+                voiceFactories.Add(new MicrosoftSpeechVoiceFactory());
+            }
+            
+
+            container.RegisterSingleton<IVoiceFactory>(new CompositeVoiceFactory(voiceFactories));
             container.Register<ISpeechManager, SpeechManager>(Lifestyle.Singleton);
             container.Register<ISpeech, SpeechSynth>(Lifestyle.Singleton);
             container.Register<MainWindow>();

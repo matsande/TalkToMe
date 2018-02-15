@@ -6,6 +6,8 @@ namespace TalkToMe.Core.Voice
     {
         IReadOnlyCollection<VoiceDescriptor> AvailableVoices { get; }
 
+        VoiceProvider Provider { get; }
+
         bool TryCreate(VoiceDescriptor voiceDescriptor, out IVoice voice);
         IVoice CreateDefault();
     }

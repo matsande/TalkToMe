@@ -46,6 +46,11 @@ namespace TalkToMe.Core.Voice
             return voice != null;
         }
 
+        internal static IVoice CreateDefault()
+        {
+            return new MicrosoftSpeechVoice(new SpeechSynthesizer(), null);
+        }
+
         private MicrosoftSpeechVoice(SpeechSynthesizer speechSynthesizer, VoiceDescriptor descriptor)
         {
             this.speech = speechSynthesizer;
