@@ -69,7 +69,6 @@ namespace TalkToMe.UI
 
             container.RegisterSingleton<IVoiceFactory>(new CompositeVoiceFactory(voiceFactories));
             container.Register<ISpeechManager, SpeechManager>(Lifestyle.Singleton);
-            container.Register<ISpeech, SpeechSynth>(Lifestyle.Singleton);
             container.Register<MainWindow>();
 
 #if DEBUG
