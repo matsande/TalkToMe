@@ -79,6 +79,7 @@
     <Compile Include="SpeechManagerTest.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Voice\CompositeVoiceFactoryTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

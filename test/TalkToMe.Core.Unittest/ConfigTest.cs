@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using FluentAssertions;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Voice;
 using Xunit;
 
 namespace TalkToMe.Core.Unittest
@@ -26,7 +27,10 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
-            var config = new Config(true, false, hotKeys, "SomeLang", "OtherLang");
+
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
 
             Config newConfig;
             using (var ms = new MemoryStream())
@@ -51,7 +55,9 @@ namespace TalkToMe.Core.Unittest
                 {new KeyInfo(Keys.A, Keys.None), CommandType.Speak },
                 {new KeyInfo(Keys.B, Keys.None), CommandType.ToggleMute }
             };
-            var configA = new Config(true, false, hotKeys, "SomeLang", "OtherLang");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var configA = new Config(true, false, hotKeys, vd1, vd2);
             var newHotkeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.C, Keys.None), CommandType.SwapLanguage }

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using SimpleInjector;
 using TalkToMe.Core;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Voice;
 using TalkToMe.UI.View;
 using TalkToMe.UI.ViewModel;
 
@@ -35,10 +36,11 @@ namespace TalkToMe.UI
                     {
                         { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
                         { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
-                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute }
+                        { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute },
+                        { new KeyInfo(Keys.W, Keys.LWin), CommandType.SwapLanguage }
                     },
-                    string.Empty,
-                    string.Empty);
+                    VoiceDescriptor.Empty,
+                    VoiceDescriptor.Empty);
             }
 
             container.Register<IClipboardTextMonitor, ClipboardTextMonitor>(Lifestyle.Singleton);
@@ -54,8 +56,19 @@ namespace TalkToMe.UI
             // Note: temporary, refactor SpeechManager to only use IConfigPersistence or something aggregating that interface.
             container.RegisterSingleton<Config>(config);
 
+            var voiceFactories = new List<IVoiceFactory>
+            {
+                new SystemSpeechVoiceFactory()
+            };
+
+            if (MicrosoftSpeechVoiceFactory.IsSupported)
+            {
+                voiceFactories.Add(new MicrosoftSpeechVoiceFactory());
+            }
+            
+
+            container.RegisterSingleton<IVoiceFactory>(new CompositeVoiceFactory(voiceFactories));
             container.Register<ISpeechManager, SpeechManager>(Lifestyle.Singleton);
-            container.Register<ISpeech, SpeechSynth>(Lifestyle.Singleton);
             container.Register<MainWindow>();
 
 #if DEBUG

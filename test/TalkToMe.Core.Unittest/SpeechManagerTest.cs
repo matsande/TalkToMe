@@ -3,11 +3,12 @@ using System.Reactive.Subjects;
 using System.Windows.Forms;
 using NSubstitute;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Voice;
 using Xunit;
 
 namespace TalkToMe.Core.Unittest
 {
-    public class TestClass
+    public class SpeechManagerTest
     {
         [Fact]
         public void ShouldInvokeSpeakCommand()
@@ -17,28 +18,32 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.A, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(false, false, hotKeys, "TestLang", "OtherLang");
-            
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(false, false, hotKeys, vd1, vd2);
+
             var keySubject = new Subject<KeyInfo>();
             var textSubject = new Subject<string>();
 
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
             clipboardMonitor.ClipboardTextObservable.Returns(textSubject);
 
-            var speech = Substitute.For<ISpeech>();
+            var voice = Substitute.For<IVoice>();
+
+            var voiceFactory = CreateSimpleVoiceFactory(voice);
 
             var keyMonitor = Substitute.For<IKeyMonitor>();
             keyMonitor.KeysObservable.Returns(keySubject);
 
             var configStore = Substitute.For<IConfigPersistence>();
 
-            var speechManager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
+            var speechManager = new SpeechManager(clipboardMonitor, voiceFactory, keyMonitor, configStore, config);
 
             var text = "Just a test";
             textSubject.OnNext(text);
             keySubject.OnNext(new KeyInfo(Keys.A, Keys.Shift));
 
-            speech.Received().Speak(text);
+            voice.Received().Speak(text);
         }
 
         [Fact]
@@ -49,19 +54,23 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.A, Keys.Shift), CommandType.ToggleMute }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
-            var speech = Substitute.For<ISpeech>();
+            var voice = Substitute.For<IVoice>();
+
+            var voiceFactory = CreateSimpleVoiceFactory(voice);
             var keyMonitor = Substitute.For<IKeyMonitor>();
             var configStore = Substitute.For<IConfigPersistence>();
             var keySubject = new Subject<KeyInfo>();
 
             keyMonitor.KeysObservable.Returns(keySubject);
 
-            var speechmanager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
+            var speechmanager = new SpeechManager(clipboardMonitor, voiceFactory, keyMonitor, configStore, config);
             keySubject.OnNext(new KeyInfo(Keys.A, Keys.Shift));
 
-            speech.Received().Abort();
+            voice.Received().Abort();
         }
 
         [Fact]
@@ -73,9 +82,13 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.B, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
-            var speech = Substitute.For<ISpeech>();
+            var voice = Substitute.For<IVoice>();
+            var voiceFactory = CreateSimpleVoiceFactory(voice);
+
             var keyMonitor = Substitute.For<IKeyMonitor>();
             var configStore = Substitute.For<IConfigPersistence>();
             var keySubject = new Subject<KeyInfo>();
@@ -84,16 +97,16 @@ namespace TalkToMe.Core.Unittest
             keyMonitor.KeysObservable.Returns(keySubject);
             clipboardMonitor.ClipboardTextObservable.Returns(textSubject);
 
-            var speechmanager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
+            var speechmanager = new SpeechManager(clipboardMonitor, voiceFactory, keyMonitor, configStore, config);
             keySubject.OnNext(new KeyInfo(Keys.A, Keys.Shift));
 
-            speech.Received().Abort();
+            voice.Received().Abort();
 
             textSubject.OnNext("Test string");
 
             keySubject.OnNext(new KeyInfo(Keys.B, Keys.Shift));
 
-            speech.DidNotReceive().Speak(Arg.Any<string>());
+            voice.DidNotReceive().Speak(Arg.Any<string>());
         }
 
         [Fact]
@@ -105,9 +118,13 @@ namespace TalkToMe.Core.Unittest
                 { new KeyInfo(Keys.B, Keys.Shift), CommandType.Speak }
             };
 
-            var config = new Config(true, false, hotKeys, "Test", "Test");
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = VoiceDescriptor.Empty;
+            var config = new Config(true, false, hotKeys, vd1, vd2);
             var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
-            var speech = Substitute.For<ISpeech>();
+            var voice = Substitute.For<IVoice>();
+
+            var voiceFactory = CreateSimpleVoiceFactory(voice);
             var keyMonitor = Substitute.For<IKeyMonitor>();
             var configStore = Substitute.For<IConfigPersistence>();
             var keySubject = new Subject<KeyInfo>();
@@ -116,12 +133,25 @@ namespace TalkToMe.Core.Unittest
             keyMonitor.KeysObservable.Returns(keySubject);
             clipboardMonitor.ClipboardTextObservable.Returns(textSubject);
 
-            var speechmanager = new SpeechManager(clipboardMonitor, speech, keyMonitor, configStore, config);
+            var speechmanager = new SpeechManager(clipboardMonitor, voiceFactory, keyMonitor, configStore, config);
 
             textSubject.OnNext("Test string");
             textSubject.OnNext("Test string");
 
-            speech.Received(1).Speak(Arg.Any<string>());
+            voice.Received(1).Speak(Arg.Any<string>());
+        }
+
+        private static IVoiceFactory CreateSimpleVoiceFactory(IVoice returnedVoice)
+        {
+            var voiceFactory = Substitute.For<IVoiceFactory>();
+            voiceFactory.TryCreate(Arg.Any<VoiceDescriptor>(), out var temp)
+                .Returns(x =>
+                {
+                    x[1] = returnedVoice;
+                    return true;
+                });
+
+            return voiceFactory;
         }
     }
 }

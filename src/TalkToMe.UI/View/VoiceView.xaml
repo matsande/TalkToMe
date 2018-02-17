@@ -5,12 +5,74 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:TalkToMe.UI.View"
+  xmlns:vm="clr-namespace:TalkToMe.UI.ViewModel"
+  xmlns:coreVoice="clr-namespace:TalkToMe.Core.Voice;assembly=TalkToMe.Core"
   mc:Ignorable="d"
   d:DesignHeight="300"
-  d:DesignWidth="300">
-  <DockPanel>
-    <TextBlock DockPanel.Dock="Top">TODO: Implement voice config</TextBlock>
+  d:DesignWidth="300"
+  d:DataContext="{x:Type vm:VoiceViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <DataTemplate
+        DataType="{x:Type coreVoice:VoiceDescriptor}">
+        <StackPanel
+          Orientation="Horizontal">
+          <TextBlock
+            Text="{Binding Provider}" />
+          <TextBlock
+            Text="{Binding VoiceName}" />
+        </StackPanel>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <DockPanel
+    Background="White">
+    <StackPanel
+      DockPanel.Dock="Top">
+      <StackPanel
+        Orientation="Horizontal">
+        <TextBlock
+          Text="Current Voice" />
+        <ContentControl
+          Content="{Binding CurrentVoice}" />
+      </StackPanel>
+
+      <StackPanel
+        Orientation="Horizontal">
+        <TextBlock
+          Text="Primary Voice" />
+        <ContentControl
+          Content="{Binding PrimaryVoice}" />
+      </StackPanel>
+
+      <StackPanel
+        Orientation="Horizontal">
+        <TextBlock
+          Text="Secondary Voice" />
+        <ContentControl
+          Content="{Binding SecondaryVoice}" />
+      </StackPanel>
+    </StackPanel>
+    <Grid
+      DockPanel.Dock="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition
+          Width="*" />
+        <ColumnDefinition
+          Width="*" />
+      </Grid.ColumnDefinitions>
+      <Button
+        DockPanel.Dock="Left"
+        Content="Set Primary"
+        Command="{Binding SetPrimaryVoice}" />
+      <Button
+        Grid.Column="1"
+        DockPanel.Dock="Left"
+        Content="Set Secondary"
+        Command="{Binding SetSecondaryVoice}" />
+    </Grid>
     <ListView
-      ItemsSource="{Binding AvailableVoices}" />
+      ItemsSource="{Binding AvailableVoices}"
+      SelectedItem="{Binding SelectedVoice}"/>
   </DockPanel>
 </UserControl>
