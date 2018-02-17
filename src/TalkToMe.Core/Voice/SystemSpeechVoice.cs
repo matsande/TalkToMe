@@ -7,6 +7,8 @@ namespace TalkToMe.Core.Voice
 {
     public class SystemSpeechVoice : IVoice
     {
+        public VoiceDescriptor Descriptor { get; }
+
         public static bool TryCreate(VoiceDescriptor descriptor, out IVoice voice)
         {
             if (descriptor.Provider != VoiceProvider.SystemSpeech)
@@ -23,16 +25,9 @@ namespace TalkToMe.Core.Voice
             return voice != null;
         }
 
-        public VoiceDescriptor Descriptor { get; }
-
         public void Abort()
         {
             this.speech.SpeakAsyncCancelAll();
-        }
-
-        internal static IVoice CreateDefault()
-        {
-            return new SystemSpeechVoice(new SpeechSynthesizer());
         }
 
         public void Speak(string text)
@@ -40,9 +35,9 @@ namespace TalkToMe.Core.Voice
             this.speech.SpeakAsync(text);
         }
 
-        private SystemSpeechVoice(SpeechSynthesizer speechSynthesizer)
-            : this(speechSynthesizer, null)
+        internal static IVoice CreateDefault()
         {
+            return new SystemSpeechVoice(new SpeechSynthesizer());
         }
 
         internal static IReadOnlyCollection<VoiceDescriptor> GetAvailableVoices()
@@ -52,6 +47,11 @@ namespace TalkToMe.Core.Voice
                 .Where(voice => voice.Enabled)
                 .Select(voice => new VoiceDescriptor(VoiceProvider.SystemSpeech, voice.VoiceInfo.Name))
                 .ToList();
+        }
+
+        private SystemSpeechVoice(SpeechSynthesizer speechSynthesizer)
+                    : this(speechSynthesizer, null)
+        {
         }
 
         private SystemSpeechVoice(SpeechSynthesizer speechSynthesizer, VoiceDescriptor descriptor)

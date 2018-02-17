@@ -9,6 +9,7 @@ namespace TalkToMe.Core.Voice
         VoiceProvider Provider { get; }
 
         bool TryCreate(VoiceDescriptor voiceDescriptor, out IVoice voice);
+
         IVoice CreateDefault();
     }
 }

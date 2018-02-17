@@ -16,6 +16,7 @@ namespace TalkToMe.Core.Voice
         }
 
         public static VoiceDescriptor Empty => empty;
+
         public VoiceProvider Provider => this.provider;
 
         public string VoiceName => this.voiceName;
