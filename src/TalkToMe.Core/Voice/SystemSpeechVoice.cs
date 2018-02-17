@@ -35,6 +35,8 @@ namespace TalkToMe.Core.Voice
             this.speech.SpeakAsync(text);
         }
 
+        public bool IsSpeaking => this.speech.State == SynthesizerState.Speaking;
+
         internal static IVoice CreateDefault()
         {
             return new SystemSpeechVoice(new SpeechSynthesizer());

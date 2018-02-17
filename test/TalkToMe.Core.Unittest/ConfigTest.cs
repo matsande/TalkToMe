@@ -30,7 +30,7 @@ namespace TalkToMe.Core.Unittest
 
             var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
             var vd2 = VoiceDescriptor.Empty;
-            var config = new Config(true, false, hotKeys, vd1, vd2);
+            var config = new Config(true, false, true, false, hotKeys, vd1, vd2);
 
             Config newConfig;
             using (var ms = new MemoryStream())
@@ -45,6 +45,8 @@ namespace TalkToMe.Core.Unittest
             newConfig.Hotkeys.Should().Equal(config.Hotkeys);
             newConfig.PrimaryVoice.Should().Be(config.PrimaryVoice);
             newConfig.SecondaryVoice.Should().Be(config.SecondaryVoice);
+            newConfig.AbortOnEscape.Should().Be(config.AbortOnEscape);
+            newConfig.OverrideWithNewText.Should().Be(config.OverrideWithNewText);
         }
 
         [Fact]
@@ -57,7 +59,7 @@ namespace TalkToMe.Core.Unittest
             };
             var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
             var vd2 = VoiceDescriptor.Empty;
-            var configA = new Config(true, false, hotKeys, vd1, vd2);
+            var configA = new Config(true, false, true, false, hotKeys, vd1, vd2);
             var newHotkeys = new Dictionary<KeyInfo, CommandType>
             {
                 {new KeyInfo(Keys.C, Keys.None), CommandType.SwapLanguage }

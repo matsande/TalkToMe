@@ -13,6 +13,8 @@ namespace TalkToMe.Core.Hook
         }
 
         void UpdateObservedKeys(IEnumerable<KeyInfo> observedkeys);
+        void AddOrUpdateKeyHandler(KeyHandler handler);
+        void RemoveKeyHandler(KeyHandler handler);
 
         IDisposable Override(Func<KeyInfo, bool> onKey);
     }

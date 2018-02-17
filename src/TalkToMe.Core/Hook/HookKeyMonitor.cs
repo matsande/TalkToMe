@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Disposables;
@@ -24,6 +25,7 @@ namespace TalkToMe.Core.Hook
             this.keysSubject = new Subject<KeyInfo>();
             this.hookProvider = hookProvider;
             this.modifierStateChecker = modifierStateChecker;
+            this.keyhandlers = new ConcurrentDictionary<KeyInfo, KeyHandler>();
             this.hookProvider.Install(this.OnKeyEvent);
         }
 
@@ -38,6 +40,16 @@ namespace TalkToMe.Core.Hook
         public void UpdateObservedKeys(IEnumerable<KeyInfo> observedKeys)
         {
             this.observedKeys = new HashSet<KeyInfo>(observedKeys.Where(k => k != KeyInfo.Empty));
+        }
+
+        public void AddOrUpdateKeyHandler(KeyHandler handler)
+        {
+            this.keyhandlers.AddOrUpdate(handler.Key, handler, (k, v) => handler);
+        }
+
+        public void RemoveKeyHandler(KeyHandler handler)
+        {
+            this.keyhandlers.TryRemove(handler.Key, out _);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -99,7 +111,12 @@ namespace TalkToMe.Core.Hook
                         {
                             handled = overrideHandler(keyInfo);
                         }
-                        else if (targetKeys.Contains(keyInfo))
+                        else if (this.keyhandlers.TryGetValue(keyInfo, out var handler))
+                        {
+                            handled = handler.Handled();
+                        }
+
+                        if (!handled && targetKeys.Contains(keyInfo))
                         {
                             this.keysSubject.OnNext(keyInfo);
                             handled = true;
@@ -151,5 +168,24 @@ namespace TalkToMe.Core.Hook
         }
 
         private IModifierStateChecker modifierStateChecker;
+        private readonly ConcurrentDictionary<KeyInfo, KeyHandler> keyhandlers;
+    }
+
+    public class KeyHandler
+    {
+        public KeyHandler(KeyInfo key, Func<bool> handler)
+        {
+            this.Key = key;
+            this.handler = handler;
+        }
+
+        public bool Handled()
+        {
+            return this.handler();
+        }
+
+        public KeyInfo Key { get; }
+
+        private readonly Func<bool> handler;
     }
 }

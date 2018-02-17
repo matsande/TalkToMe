@@ -55,9 +55,28 @@
             this.InitializeVoices();
             this.commandMap = this.InitializeCommands(config);
 
+            this.keyMonitor.AddOrUpdateKeyHandler(new KeyHandler(new KeyInfo(Keys.Escape, Keys.None), this.OnEscapePressed));
+
             this.clipboardSubscription = this.clipboardMonitor.ClipboardTextObservable.Subscribe(this.OnTextChanged);
             this.keySubscription = this.keyMonitor.KeysObservable.Subscribe(this.OnKeyPressed);
             this.stateChangeSubject = new Subject<SpeechManagerStateChange>();
+        }
+
+        private bool OnEscapePressed()
+        {
+            bool handled;
+
+            if (this.config.AbortOnEscape && this.currentVoice.IsSpeaking)
+            {
+                this.currentVoice.Abort();
+                handled = true;
+            }
+            else
+            {
+                handled = false;
+            }
+
+            return handled;
         }
 
         public IObservable<SpeechManagerStateChange> StateChangeObservable => this.stateChangeSubject.AsObservable();
@@ -120,8 +139,25 @@
                 this.secondaryVoice = this.voiceFactory.CreateDefault();
             }
 
-            // TODO: Should we persist the last selected voice?
-            this.currentVoice = this.primaryVoice;
+            if (this.currentVoice != null && this.currentVoice.Descriptor != VoiceDescriptor.Empty)
+            {
+                if (this.currentVoice.Descriptor == this.primaryVoice.Descriptor)
+                {
+                    this.currentVoice = this.primaryVoice;
+                }
+                else if (this.currentVoice.Descriptor == this.secondaryVoice.Descriptor)
+                {
+                    this.currentVoice = this.secondaryVoice;
+                }
+                else
+                {
+                    this.currentVoice = this.primaryVoice;
+                }
+            }
+            else
+            {
+                this.currentVoice = this.primaryVoice;
+            }
         }
 
         /// <summary>
@@ -205,6 +241,11 @@
         {
             if (!this.config.Mute && !string.IsNullOrEmpty(this.lastText))
             {
+                if (this.config.OverrideWithNewText && this.currentVoice.IsSpeaking)
+                {
+                    this.currentVoice.Abort();
+                }
+
                 this.currentVoice.Speak(this.lastText);
             }
         }

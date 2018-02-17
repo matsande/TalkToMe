@@ -15,12 +15,16 @@ namespace TalkToMe.Core
     {
         public bool AutoMode => this.autoMode;
         public bool Mute => this.mute;
+        public bool AbortOnEscape => this.abortOnEscape;
+        public bool OverrideWithNewText => this.overrideWithNewText;
         public Dictionary<KeyInfo, CommandType> Hotkeys => this.hotkeys;
         public VoiceDescriptor PrimaryVoice => this.primaryVoice;
         public VoiceDescriptor SecondaryVoice => this.secondaryVoice;
 
         public Config With(bool? autoMode = null,
             bool? mute = null,
+            bool? abortOnEscape = null,
+            bool? overrideWithNewText = null,
             Dictionary<KeyInfo, CommandType> hotKeys = null,
             VoiceDescriptor primaryVoice = null,
             VoiceDescriptor secondaryVoice = null)
@@ -28,6 +32,8 @@ namespace TalkToMe.Core
             var sameInstance =
                 (this.AutoMode == autoMode || autoMode == null) &&
                 (this.Mute == mute || mute == null) &&
+                (this.AbortOnEscape == abortOnEscape || abortOnEscape == null) &&
+                (this.OverrideWithNewText == overrideWithNewText || overrideWithNewText == null) &&
                 (this.Hotkeys == hotKeys || hotKeys == null) &&
                 (this.PrimaryVoice == primaryVoice || primaryVoice == null) &&
                 (this.SecondaryVoice == secondaryVoice || secondaryVoice == null);
@@ -37,6 +43,8 @@ namespace TalkToMe.Core
                 : new Config(
                     autoMode ?? this.AutoMode, 
                     mute ?? this.Mute,
+                    abortOnEscape ?? this.AbortOnEscape,
+                    overrideWithNewText ?? this.OverrideWithNewText,
                     hotKeys ?? this.Hotkeys, 
                     primaryVoice ?? this.PrimaryVoice,
                     secondaryVoice ?? this.SecondaryVoice);
@@ -62,17 +70,26 @@ namespace TalkToMe.Core
             }
         }
 
-        public Config(bool autoMode, bool mute, Dictionary<KeyInfo, CommandType> hotkeys, VoiceDescriptor primaryVoice, VoiceDescriptor secondaryVoice)
-            : this(autoMode, mute, hotkeys.Select(kvp => new KeyInfoAndCommand(kvp.Key, kvp.Value)).ToList(), primaryVoice, secondaryVoice)
+        public Config(bool autoMode, bool mute, bool abortOnEscape, bool overrideWithNewText, Dictionary<KeyInfo, CommandType> hotkeys, VoiceDescriptor primaryVoice, VoiceDescriptor secondaryVoice)
+            : this(autoMode, mute, abortOnEscape, overrideWithNewText, hotkeys.Select(kvp => new KeyInfoAndCommand(kvp.Key, kvp.Value)).ToList(), primaryVoice, secondaryVoice)
         {
             this.hotkeys = hotkeys;
         }
 
         [JsonConstructor]
-        public Config(bool autoMode, bool mute, List<KeyInfoAndCommand> hotkeySetup, VoiceDescriptor primaryVoice, VoiceDescriptor secondaryVoice)
+        public Config(
+            bool autoMode, 
+            bool mute, 
+            bool abortOnEscape,
+            bool overrideWithNewText,
+            List<KeyInfoAndCommand> hotkeySetup, 
+            VoiceDescriptor primaryVoice, 
+            VoiceDescriptor secondaryVoice)
         {
             this.autoMode = autoMode;
             this.mute = mute;
+            this.abortOnEscape = abortOnEscape;
+            this.overrideWithNewText = overrideWithNewText;
             this.hotkeySetup = hotkeySetup.ToList();
             this.hotkeys = hotkeySetup.ToDictionary(item => item.KeyInfo, item => item.Command);
             this.primaryVoice = primaryVoice ?? throw new ArgumentNullException(nameof(primaryVoice));
@@ -88,6 +105,12 @@ namespace TalkToMe.Core
 
         [JsonProperty]
         private bool mute;
+
+        [JsonProperty]
+        private bool abortOnEscape;
+
+        [JsonProperty]
+        private bool overrideWithNewText;
 
         [JsonProperty]
         private List<KeyInfoAndCommand> hotkeySetup = new List<KeyInfoAndCommand>();

@@ -30,17 +30,19 @@ namespace TalkToMe.UI
             if (!configPersistence.TryLoad(out var config))
             {
                 config = new Config(
-                    true,
-                    false,
-                    new Dictionary<KeyInfo, CommandType>
+                    autoMode: true,
+                    mute: false,
+                    abortOnEscape: true,
+                    overrideWithNewText: true,
+                    hotkeys: new Dictionary<KeyInfo, CommandType>
                     {
                         { new KeyInfo(Keys.A, Keys.LWin), CommandType.ToggleAutoMode },
                         { new KeyInfo(Keys.T, Keys.LWin), CommandType.Speak },
                         { new KeyInfo(Keys.M, Keys.LWin), CommandType.ToggleMute },
                         { new KeyInfo(Keys.W, Keys.LWin), CommandType.SwapLanguage }
                     },
-                    VoiceDescriptor.Empty,
-                    VoiceDescriptor.Empty);
+                    primaryVoice: VoiceDescriptor.Empty,
+                    secondaryVoice: VoiceDescriptor.Empty);
             }
 
             container.Register<IClipboardTextMonitor, ClipboardTextMonitor>(Lifestyle.Singleton);

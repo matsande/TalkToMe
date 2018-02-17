@@ -19,6 +19,8 @@ namespace TalkToMe.Core.Voice
             this.speech.SpeakAsync(text);
         }
 
+        public bool IsSpeaking => this.speech.State == SynthesizerState.Speaking;
+
         internal static IReadOnlyCollection<VoiceDescriptor> GetAvailableVoices()
         {
             var speech = new SpeechSynthesizer();
