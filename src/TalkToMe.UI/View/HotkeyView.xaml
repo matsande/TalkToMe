@@ -12,13 +12,23 @@
   d:DesignHeight="300"
   d:DesignWidth="300"
   d:DataContext="{x:Type vm:HotkeyViewModel}">
-  <DockPanel Background="LightGray" LastChildFill="False">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <DockPanel Background="{StaticResource PrimaryBackground}" LastChildFill="False">
     <StackPanel DockPanel.Dock="Top">
-      <ListView ItemsSource="{Binding SupportedCommands}" x:Name="commandList">
-        <ListView.ItemTemplate>
+      <ItemsControl ItemsSource="{Binding SupportedCommands}" x:Name="commandList">
+        <ItemsControl.ItemTemplate>
           <DataTemplate
             DataType="{x:Type hk:KeyInfoAndCommand}">
             <StackPanel
+              Margin="5"
               Orientation="Horizontal">
               <TextBlock
                 Text="{Binding Command}" />
@@ -32,8 +42,8 @@
                 Content="Clear"/>
             </StackPanel>
           </DataTemplate>
-        </ListView.ItemTemplate>
-      </ListView>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
 
     </StackPanel>
     <DockPanel

@@ -13,6 +13,12 @@
   d:DataContext="{x:Type vm:VoiceViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
+
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
       <DataTemplate
         DataType="{x:Type coreVoice:VoiceDescriptor}">
         <StackPanel
@@ -26,7 +32,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <DockPanel
-    Background="White">
+    Background="{StaticResource PrimaryBackground}">
     <StackPanel
       DockPanel.Dock="Top">
       <StackPanel
