@@ -18,20 +18,52 @@
         <ResourceDictionary
           Source="..\Style\TabControl.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <!-- Note: just a placeholder... -->
+      <Style
+        TargetType="{x:Type TextBlock}"
+        x:Key="TabHeaderStyle">
+        <Setter
+          Property="Width"
+          Value="60" />
+        <Setter
+          Property="Height"
+          Value="50" />
+        <Setter
+          Property="FontWeight"
+          Value="Bold" />
+        <Setter
+          Property="Foreground"
+          Value="{StaticResource PrimaryForeground}" />
+      </Style>
+
     </ResourceDictionary>
   </UserControl.Resources>
-  <TabControl TabStripPlacement="Left">
-      <TabItem
-        Header="General">
-        <local:GeneralView />
-      </TabItem>
-      <TabItem
-        Header="Voice">
-        <local:VoiceView />
-      </TabItem>
-      <TabItem
-        Header="Hotkeys">
-        <local:HotkeyView />
-      </TabItem>
+  <TabControl
+    TabStripPlacement="Left">
+    <TabItem>
+      <TabItem.Header>
+        <TextBlock
+          Style="{StaticResource TabHeaderStyle}"
+          Text="GENERAL" />
+      </TabItem.Header>
+      <local:GeneralView />
+    </TabItem>
+    <TabItem>
+      <TabItem.Header>
+        <TextBlock
+          Style="{StaticResource TabHeaderStyle}"
+          Text="VOICE" />
+      </TabItem.Header>
+      <local:VoiceView />
+    </TabItem>
+    <TabItem>
+      <TabItem.Header>
+        <TextBlock
+          Style="{StaticResource TabHeaderStyle}"
+          Text="HOTKEY" />
+      </TabItem.Header>
+      <local:HotkeyView />
+    </TabItem>
   </TabControl>
 </UserControl>

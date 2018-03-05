@@ -17,5 +17,5 @@
     x:Key="WeakForeground">#CACACA</SolidColorBrush>
 
   <SolidColorBrush
-    x:Key="PositiveAccent">#2c6844</SolidColorBrush>
+    x:Key="PositiveAccent">#3c8854</SolidColorBrush>
 </ResourceDictionary>
