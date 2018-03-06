@@ -63,7 +63,7 @@ namespace TalkToMe.UI.Control
             {
                 return keyInfo.Modifier == System.Windows.Forms.Keys.None
                     ? keyInfo.Key.ToString()
-                    : $"{keyInfo.Key} + {keyInfo.Modifier}";
+                    : $"{keyInfo.Modifier} + {keyInfo.Key}";
             }
         }
 

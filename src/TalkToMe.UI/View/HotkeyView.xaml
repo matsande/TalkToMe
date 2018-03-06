@@ -31,12 +31,19 @@
               Margin="5"
               Orientation="Horizontal">
               <TextBlock
+                VerticalAlignment="Center"
+                Foreground="{StaticResource PrimaryForeground}"
+                FontSize="16"
+                FontWeight="Bold"
+                Width="200"
                 Text="{Binding Command}" />
               <control:HotKeySelection
+                VerticalAlignment="Center"
                 KeyMonitor="{Binding DataContext.KeyMonitor, Mode=OneWay, ElementName=commandList}"
                 SelectedHotkey="{Binding Key, Mode=TwoWay}"
                 MinWidth="200" />
               <Button
+                Margin="5,0"
                 Command="{Binding DataContext.ClearBindingCommand, ElementName=commandList}"
                 CommandParameter="{Binding}"
                 Content="Clear"/>
