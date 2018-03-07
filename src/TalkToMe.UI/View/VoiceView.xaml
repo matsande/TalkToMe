@@ -17,50 +17,74 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="..\Style\Common.xaml" />
+        <ResourceDictionary
+          Source="..\Style\Button.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate
         DataType="{x:Type coreVoice:VoiceDescriptor}">
-        <StackPanel
-          Orientation="Horizontal">
-          <TextBlock
-            Text="{Binding Provider}" />
-          <TextBlock
-            Text="{Binding VoiceName}" />
-        </StackPanel>
+        <TextBlock
+          Margin="10,0"
+          Foreground="{StaticResource WeakForeground}"
+          Text="{Binding VoiceName}" />
       </DataTemplate>
+
+      <Style
+        x:Key="VoiceSelectionButton"
+        TargetType="{x:Type Button}"
+        BasedOn="{StaticResource {x:Type Button}}">
+        <Setter
+          Property="Margin"
+          Value="5" />
+        <Setter
+          Property="FontSize"
+          Value="16" />
+        <Setter
+          Property="FontWeight"
+          Value="Bold" />
+        <Setter
+          Property="Foreground"
+          Value="{StaticResource PrimaryForeground}" />
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
   <DockPanel
     Background="{StaticResource PrimaryBackground}">
     <StackPanel
       DockPanel.Dock="Top">
+
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Current Voice" />
         <ContentControl
           Content="{Binding CurrentVoice}" />
       </StackPanel>
 
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Primary Voice" />
         <ContentControl
           Content="{Binding PrimaryVoice}" />
       </StackPanel>
 
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Secondary Voice" />
         <ContentControl
           Content="{Binding SecondaryVoice}" />
       </StackPanel>
     </StackPanel>
     <Grid
-      DockPanel.Dock="Top">
+      DockPanel.Dock="Bottom">
       <Grid.ColumnDefinitions>
         <ColumnDefinition
           Width="*" />
@@ -68,17 +92,23 @@
           Width="*" />
       </Grid.ColumnDefinitions>
       <Button
+        Grid.Column="0"
         DockPanel.Dock="Left"
+        Style="{StaticResource VoiceSelectionButton}"
         Content="Set Primary"
         Command="{Binding SetPrimaryVoice}" />
       <Button
         Grid.Column="1"
         DockPanel.Dock="Left"
+        Style="{StaticResource VoiceSelectionButton}"
         Content="Set Secondary"
         Command="{Binding SetSecondaryVoice}" />
     </Grid>
     <ListView
+      BorderBrush="Black"
+      Background="{StaticResource DarkBackground}"
+      DockPanel.Dock="Top"
       ItemsSource="{Binding AvailableVoices}"
-      SelectedItem="{Binding SelectedVoice}"/>
+      SelectedItem="{Binding SelectedVoice}" />
   </DockPanel>
 </UserControl>

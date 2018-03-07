@@ -21,25 +21,6 @@
 
       <Style
         TargetType="{x:Type TextBlock}"
-        x:Key="OptionHeader">
-        <Style.Setters>
-          <Setter
-            Property="FontWeight"
-            Value="Bold" />
-          <Setter
-            Property="Foreground"
-            Value="{StaticResource PrimaryForeground}" />
-          <Setter
-            Property="FontSize"
-            Value="18" />
-          <Setter
-            Property="Margin"
-            Value="5,0" />
-        </Style.Setters>
-      </Style>
-
-      <Style
-        TargetType="{x:Type TextBlock}"
         x:Key="OptionDescription">
         <Style.Setters>
           <Setter
@@ -80,7 +61,7 @@
             IsChecked="{Binding AutoMode}">
             <StackPanel>
               <TextBlock
-                Style="{StaticResource OptionHeader}">Auto Mode</TextBlock>
+                Style="{StaticResource HeaderTextBlock}">Auto Mode</TextBlock>
               <TextBlock
                 Style="{StaticResource OptionDescription}">If activated, text will be spoken upon new text in the clipboard.</TextBlock>
             </StackPanel>
@@ -93,7 +74,7 @@
             IsChecked="{Binding Mute}">
             <StackPanel>
               <TextBlock
-                Style="{StaticResource OptionHeader}">Mute</TextBlock>
+                Style="{StaticResource HeaderTextBlock}">Mute</TextBlock>
               <TextBlock
                 Style="{StaticResource OptionDescription}">If checked, will stop all further sound.</TextBlock>
             </StackPanel>
@@ -106,7 +87,7 @@
             IsChecked="{Binding AbortOnEscape}">
             <StackPanel>
               <TextBlock
-                Style="{StaticResource OptionHeader}">Abort on Escape</TextBlock>
+                Style="{StaticResource HeaderTextBlock}">Abort on Escape</TextBlock>
               <TextBlock
                 Style="{StaticResource OptionDescription}">If checked, will abort any currently speaking text on Escape.</TextBlock>
             </StackPanel>
@@ -119,7 +100,7 @@
             IsChecked="{Binding OverrideWithNewText}">
             <StackPanel>
               <TextBlock
-                Style="{StaticResource OptionHeader}">Override with new text.</TextBlock>
+                Style="{StaticResource HeaderTextBlock}">Override with new text.</TextBlock>
               <TextBlock
                 Style="{StaticResource OptionDescription}">If checked, will cause any new text added to the clipboard to interrupt any currently spoken text.</TextBlock>
             </StackPanel>

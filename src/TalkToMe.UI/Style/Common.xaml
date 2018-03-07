@@ -1,6 +1,7 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:TalkToMe.UI.Style">
+﻿<ResourceDictionary
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:TalkToMe.UI.Style">
   <SolidColorBrush
     x:Key="PrimaryBackground">#2F3136</SolidColorBrush>
 
@@ -18,4 +19,28 @@
 
   <SolidColorBrush
     x:Key="PositiveAccent">#3c8854</SolidColorBrush>
+
+  <SolidColorBrush
+    x:Key="PrimaryAccent">#7289da</SolidColorBrush>
+  <SolidColorBrush
+    x:Key="PrimaryAccentDark">#5c6fb2</SolidColorBrush>
+
+  <Style
+    TargetType="{x:Type TextBlock}"
+    x:Key="HeaderTextBlock">
+    <Style.Setters>
+      <Setter
+        Property="FontWeight"
+        Value="Bold" />
+      <Setter
+        Property="Foreground"
+        Value="{StaticResource PrimaryForeground}" />
+      <Setter
+        Property="FontSize"
+        Value="18" />
+      <Setter
+        Property="Margin"
+        Value="5,0" />
+    </Style.Setters>
+  </Style>
 </ResourceDictionary>
