@@ -24,8 +24,8 @@
       <DataTemplate
         DataType="{x:Type coreVoice:VoiceDescriptor}">
         <TextBlock
-          Margin="10,0"
-          Foreground="{StaticResource WeakForeground}"
+          Foreground="{StaticResource PrimaryForeground}"
+          FontSize="16"
           Text="{Binding VoiceName}" />
       </DataTemplate>
 
@@ -33,9 +33,6 @@
         x:Key="VoiceSelectionButton"
         TargetType="{x:Type Button}"
         BasedOn="{StaticResource {x:Type Button}}">
-        <Setter
-          Property="Margin"
-          Value="5" />
         <Setter
           Property="FontSize"
           Value="16" />
@@ -68,6 +65,7 @@
           Style="{StaticResource HeaderTextBlock}"
           Text="Current Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding CurrentVoice}" />
       </StackPanel>
 
@@ -78,6 +76,7 @@
           Style="{StaticResource HeaderTextBlock}"
           Text="Primary Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding PrimaryVoice}" />
       </StackPanel>
 
@@ -88,6 +87,7 @@
           Style="{StaticResource HeaderTextBlock}"
           Text="Secondary Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding SecondaryVoice}" />
       </StackPanel>
     </StackPanel>
@@ -102,12 +102,14 @@
       <Button
         Grid.Column="0"
         DockPanel.Dock="Left"
+        Margin="0,5,5,5"
         Style="{StaticResource VoiceSelectionButton}"
         Content="Set Primary"
         Command="{Binding SetPrimaryVoice}" />
       <Button
         Grid.Column="1"
         DockPanel.Dock="Left"
+        Margin="5,5,0,5"
         Style="{StaticResource VoiceSelectionButton}"
         Content="Set Secondary"
         Command="{Binding SetSecondaryVoice}" />
@@ -116,6 +118,7 @@
       BorderBrush="Black"
       Background="{StaticResource DarkBackground}"
       DockPanel.Dock="Top"
+      Margin="0,5"
       ItemsSource="{Binding AvailableVoices}"
       SelectedItem="{Binding SelectedVoice}">
       <ListView.ItemContainerStyle>
@@ -127,6 +130,7 @@
               <ControlTemplate
                 TargetType="{x:Type ListViewItem}">
                 <Border
+                  Padding="0,2"
                   CornerRadius="2"
                   SnapsToDevicePixels="True"
                   BorderThickness="{TemplateBinding BorderThickness}"
@@ -148,21 +152,21 @@
                       Value="{StaticResource PositiveAccent}" />
                     <Setter
                       Property="BorderBrush"
-                      Value="#FFCCF0FF" />
+                      Value="{StaticResource PositiveAccent}" />
                   </Trigger>
                   <Trigger
                     Property="IsSelected"
                     Value="True">
-                    <!--<Setter
+                    <Setter
                       Property="Background"
-                      Value="{StaticResource ListItemSelectedFill}" />-->
+                      Value="{StaticResource PositiveAccent}" />
                     <Setter
                       Property="BorderBrush"
-                      Value="#FF98DDFB" />
+                      Value="DarkGreen" />
                     <Setter
                       TargetName="InnerBorder"
                       Property="BorderBrush"
-                      Value="#80FFFFFF" />
+                      Value="DarkGreen" />
                   </Trigger>
                   <MultiTrigger>
                     <MultiTrigger.Conditions>
@@ -178,7 +182,7 @@
                       Value="{StaticResource ListItemSelectedInactiveFill}" />-->
                     <Setter
                       Property="BorderBrush"
-                      Value="#FFCFCFCF" />
+                      Value="DarkGreen" />
                   </MultiTrigger>
                   <MultiTrigger>
                     <MultiTrigger.Conditions>
@@ -194,7 +198,7 @@
                       Value="{StaticResource PositiveAccent}" />
                     <Setter
                       Property="BorderBrush"
-                      Value="#FF98DDFB" />
+                      Value="{StaticResource PositiveAccent}" />
                   </MultiTrigger>
                   <Trigger
                     Property="IsEnabled"
