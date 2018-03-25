@@ -4,25 +4,139 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:vm="clr-namespace:TalkToMe.UI.ViewModel"
   xmlns:local="clr-namespace:TalkToMe.UI.View"
   mc:Ignorable="d"
   d:DesignHeight="300"
-  d:DesignWidth="300">
-  <TabControl>
-    <TabControl.Items>
+  d:DesignWidth="300"
+  d:DataContext="{x:Type vm:SpeechManagerViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+        <ResourceDictionary
+          Source="..\Style\TabControl.xaml" />
+      </ResourceDictionary.MergedDictionaries>
 
-      <TabItem
-        Header="General">
-        <local:GeneralView />
-      </TabItem>
-      <TabItem
-        Header="Voice">
-        <local:VoiceView />
-      </TabItem>
-      <TabItem
-        Header="Hotkeys">
-        <local:HotkeyView />
-      </TabItem>
-    </TabControl.Items>
+      <SolidColorBrush
+        x:Key="UnselectedTabItemColor">#CCC</SolidColorBrush>
+
+      <!-- Note: just a placeholder... -->
+      <Style
+        TargetType="{x:Type TextBlock}"
+        x:Key="TabHeaderStyle">
+        <Setter
+          Property="Width"
+          Value="60" />
+        <Setter
+          Property="Height"
+          Value="50" />
+        <Setter
+          Property="FontWeight"
+          Value="Bold" />
+        <Setter
+          Property="Foreground"
+          Value="{StaticResource PrimaryForeground}" />
+      </Style>
+
+    </ResourceDictionary>
+  </UserControl.Resources>
+  
+  <TabControl
+    TabStripPlacement="Left">
+    <TabItem x:Name="generalTabItem">
+      <TabItem.Header>
+        <Rectangle
+          Width="64"
+          Height="64">
+          <Rectangle.Style>
+            <Style
+              TargetType="{x:Type Rectangle}">
+              <Setter
+                Property="Fill"
+                Value="{StaticResource UnselectedTabItemColor}" />
+              <Style.Triggers>
+                <DataTrigger
+                  Binding="{Binding IsSelected, ElementName=generalTabItem}" Value="True">
+                  <Setter
+                    Property="Fill"
+                    Value="{StaticResource PrimaryAccent}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Rectangle.Style>
+          <Rectangle.OpacityMask>
+            <ImageBrush
+              ImageSource="../Image/settings_general.png">
+            </ImageBrush> 
+          </Rectangle.OpacityMask>
+        </Rectangle>
+      </TabItem.Header>
+      <local:GeneralView />
+    </TabItem>
+
+    <TabItem x:Name="speechTabItem">
+      <TabItem.Header>
+        <Rectangle
+          Width="64"
+          Height="64">
+          <Rectangle.Style>
+            <Style
+              TargetType="{x:Type Rectangle}">
+              <Setter
+                Property="Fill"
+                Value="{StaticResource UnselectedTabItemColor}" />
+              <Style.Triggers>
+                <DataTrigger
+                  Binding="{Binding IsSelected, ElementName=speechTabItem}" Value="True">
+                  <Setter
+                    Property="Fill"
+                    Value="{StaticResource PrimaryAccent}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Rectangle.Style>
+          <Rectangle.OpacityMask>
+            <ImageBrush
+              ImageSource="../Image/settings_speech.png">
+            </ImageBrush> 
+          </Rectangle.OpacityMask>
+        </Rectangle>
+      </TabItem.Header>
+      <local:VoiceView />
+    </TabItem>
+
+    <TabItem x:Name="hotKeyTabItem">
+      <TabItem.Header>
+        <Rectangle
+          Width="64"
+          Height="64">
+          <Rectangle.Style>
+            <Style
+              TargetType="{x:Type Rectangle}">
+              <Setter
+                Property="Fill"
+                Value="{StaticResource UnselectedTabItemColor}" />
+              <Style.Triggers>
+                <DataTrigger
+                  Binding="{Binding IsSelected, ElementName=hotKeyTabItem}" Value="True">
+                  <Setter
+                    Property="Fill"
+                    Value="{StaticResource PrimaryAccent}" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Rectangle.Style>
+          <Rectangle.OpacityMask>
+            <ImageBrush
+              ImageSource="../Image/settings_shortcuts.png">
+            </ImageBrush> 
+          </Rectangle.OpacityMask>
+        </Rectangle>
+      </TabItem.Header>
+      <local:HotkeyView />
+    </TabItem>
+
   </TabControl>
 </UserControl>

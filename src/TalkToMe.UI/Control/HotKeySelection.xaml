@@ -6,9 +6,25 @@
              xmlns:local="clr-namespace:TalkToMe.UI.Control"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
     <Grid>
     <TextBox 
       x:Name="keyTextBox"
+      Background="{StaticResource DarkBackground}"
+      FontWeight="Bold"
+      BorderThickness="1"
+      BorderBrush="Black"
+      Padding="3"
+      FontSize="16"
+      Foreground="{StaticResource PrimaryForeground}"
       GotFocus="OnGotFocus" 
       LostFocus="OnLostFocus" />
   </Grid>

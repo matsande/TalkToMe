@@ -13,48 +13,86 @@
   d:DataContext="{x:Type vm:VoiceViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
+
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+        <ResourceDictionary
+          Source="..\Style\Button.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
       <DataTemplate
         DataType="{x:Type coreVoice:VoiceDescriptor}">
-        <StackPanel
-          Orientation="Horizontal">
-          <TextBlock
-            Text="{Binding Provider}" />
-          <TextBlock
-            Text="{Binding VoiceName}" />
-        </StackPanel>
+        <TextBlock
+          Foreground="{StaticResource PrimaryForeground}"
+          FontSize="16"
+          Text="{Binding VoiceName}" />
       </DataTemplate>
+
+      <Style
+        x:Key="VoiceSelectionButton"
+        TargetType="{x:Type Button}"
+        BasedOn="{StaticResource {x:Type Button}}">
+        <Setter
+          Property="FontSize"
+          Value="16" />
+        <Setter
+          Property="FontWeight"
+          Value="Bold" />
+        <Setter
+          Property="Foreground"
+          Value="{StaticResource PrimaryForeground}" />
+      </Style>
+
+      <SolidColorBrush
+        x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+        Color="Lime" />
+      <SolidColorBrush
+        x:Key="{x:Static SystemColors.HighlightBrushKey}"
+        Color="LimeGreen" />
+
     </ResourceDictionary>
   </UserControl.Resources>
   <DockPanel
-    Background="White">
+    Background="{StaticResource PrimaryBackground}">
     <StackPanel
       DockPanel.Dock="Top">
+
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Current Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding CurrentVoice}" />
       </StackPanel>
 
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Primary Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding PrimaryVoice}" />
       </StackPanel>
 
       <StackPanel
-        Orientation="Horizontal">
+        Margin="0,5"
+        Orientation="Vertical">
         <TextBlock
+          Style="{StaticResource HeaderTextBlock}"
           Text="Secondary Voice" />
         <ContentControl
+          Margin="10,0"
           Content="{Binding SecondaryVoice}" />
       </StackPanel>
     </StackPanel>
     <Grid
-      DockPanel.Dock="Top">
+      DockPanel.Dock="Bottom">
       <Grid.ColumnDefinitions>
         <ColumnDefinition
           Width="*" />
@@ -62,17 +100,119 @@
           Width="*" />
       </Grid.ColumnDefinitions>
       <Button
+        Grid.Column="0"
         DockPanel.Dock="Left"
+        Margin="0,5,5,5"
+        Style="{StaticResource VoiceSelectionButton}"
         Content="Set Primary"
         Command="{Binding SetPrimaryVoice}" />
       <Button
         Grid.Column="1"
         DockPanel.Dock="Left"
+        Margin="5,5,0,5"
+        Style="{StaticResource VoiceSelectionButton}"
         Content="Set Secondary"
         Command="{Binding SetSecondaryVoice}" />
     </Grid>
     <ListView
+      BorderBrush="Black"
+      Background="{StaticResource DarkBackground}"
+      DockPanel.Dock="Top"
+      Margin="0,5"
       ItemsSource="{Binding AvailableVoices}"
-      SelectedItem="{Binding SelectedVoice}"/>
+      SelectedItem="{Binding SelectedVoice}">
+      <ListView.ItemContainerStyle>
+        <Style
+          TargetType="{x:Type ListViewItem}">
+          <Setter
+            Property="Template">
+            <Setter.Value>
+              <ControlTemplate
+                TargetType="{x:Type ListViewItem}">
+                <Border
+                  Padding="0,2"
+                  CornerRadius="2"
+                  SnapsToDevicePixels="True"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  Background="{TemplateBinding Background}">
+                  <Border
+                    Name="InnerBorder"
+                    CornerRadius="1"
+                    BorderThickness="1">
+                    <ContentPresenter />
+                  </Border>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger
+                    Property="IsMouseOver"
+                    Value="True">
+                    <Setter
+                      Property="Background"
+                      Value="{StaticResource PositiveAccent}" />
+                    <Setter
+                      Property="BorderBrush"
+                      Value="{StaticResource PositiveAccent}" />
+                  </Trigger>
+                  <Trigger
+                    Property="IsSelected"
+                    Value="True">
+                    <Setter
+                      Property="Background"
+                      Value="{StaticResource PositiveAccent}" />
+                    <Setter
+                      Property="BorderBrush"
+                      Value="DarkGreen" />
+                    <Setter
+                      TargetName="InnerBorder"
+                      Property="BorderBrush"
+                      Value="DarkGreen" />
+                  </Trigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition
+                        Property="IsSelected"
+                        Value="True" />
+                      <Condition
+                        Property="Selector.IsSelectionActive"
+                        Value="False" />
+                    </MultiTrigger.Conditions>
+                    <!--<Setter
+                      Property="Background"
+                      Value="{StaticResource ListItemSelectedInactiveFill}" />-->
+                    <Setter
+                      Property="BorderBrush"
+                      Value="DarkGreen" />
+                  </MultiTrigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition
+                        Property="IsSelected"
+                        Value="True" />
+                      <Condition
+                        Property="IsMouseOver"
+                        Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter
+                      Property="Background"
+                      Value="{StaticResource PositiveAccent}" />
+                    <Setter
+                      Property="BorderBrush"
+                      Value="{StaticResource PositiveAccent}" />
+                  </MultiTrigger>
+                  <Trigger
+                    Property="IsEnabled"
+                    Value="False">
+                    <Setter
+                      Property="Foreground"
+                      Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </ListView.ItemContainerStyle>
+    </ListView>
   </DockPanel>
 </UserControl>

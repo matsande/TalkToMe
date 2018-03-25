@@ -10,49 +10,102 @@
   d:DesignHeight="300"
   d:DesignWidth="300"
   d:DataContext="{x:Type vm:GeneralViewModel}">
-  <Grid>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="..\Style\Common.xaml" />
+        <ResourceDictionary
+          Source="..\Style\CheckBox.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <Style
+        TargetType="{x:Type TextBlock}"
+        x:Key="OptionDescription">
+        <Style.Setters>
+          <Setter
+            Property="Foreground"
+            Value="{StaticResource WeakForeground}" />
+          <Setter
+            Property="FontSize"
+            Value="14" />
+          <Setter
+            Property="Margin"
+            Value="5,0" />
+        </Style.Setters>
+      </Style>
+
+      <Style
+        TargetType="{x:Type Border}"
+        x:Key="OptionBorder">
+        <Setter
+          Property="Margin"
+          Value="5" />
+        <Setter
+          Property="Padding"
+          Value="5" />
+      </Style>
+
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid
+    Background="{StaticResource PrimaryBackground}">
     <DockPanel>
       <StackPanel
         DockPanel.Dock="Top">
-        <CheckBox
-          IsChecked="{Binding AutoMode}">
-          <StackPanel>
-            <TextBlock
-              FontWeight="Bold">Auto Mode</TextBlock>
-            <TextBlock
-              Foreground="Gray">If activated, text will be spoken upon new text in the clipboard.</TextBlock>
-          </StackPanel>
-        </CheckBox>
 
-        <CheckBox
-          IsChecked="{Binding Mute}">
-          <StackPanel>
-            <TextBlock
-              FontWeight="Bold">Mute</TextBlock>
-            <TextBlock
-              Foreground="Gray">If checked, will stop all further sound.</TextBlock>
-          </StackPanel>
-        </CheckBox>
+        <Border
+          Style="{StaticResource OptionBorder}">
+          <CheckBox
+            IsChecked="{Binding AutoMode}">
+            <StackPanel>
+              <TextBlock
+                Style="{StaticResource HeaderTextBlock}">Auto Mode</TextBlock>
+              <TextBlock
+                Style="{StaticResource OptionDescription}">If activated, text will be spoken upon new text in the clipboard.</TextBlock>
+            </StackPanel>
+          </CheckBox>
+        </Border>
 
-        <CheckBox
-          IsChecked="{Binding AbortOnEscape}">
-          <StackPanel>
-            <TextBlock
-              FontWeight="Bold">Abort on Escape</TextBlock>
-            <TextBlock
-              Foreground="Gray">If checked, will abort any currently speaking text on Escape.</TextBlock>
-          </StackPanel>
-        </CheckBox>
+        <Border
+          Style="{StaticResource OptionBorder}">
+          <CheckBox
+            IsChecked="{Binding Mute}">
+            <StackPanel>
+              <TextBlock
+                Style="{StaticResource HeaderTextBlock}">Mute</TextBlock>
+              <TextBlock
+                Style="{StaticResource OptionDescription}">If checked, will stop all further sound.</TextBlock>
+            </StackPanel>
+          </CheckBox>
+        </Border>
 
-        <CheckBox
-          IsChecked="{Binding OverrideWithNewText}">
-          <StackPanel>
-            <TextBlock
-              FontWeight="Bold">Override with new text.</TextBlock>
-            <TextBlock
-              Foreground="Gray">If checked, will cause any new text added to the clipboard to interrupt any currently spoken text.</TextBlock>
-          </StackPanel>
-        </CheckBox>
+        <Border
+          Style="{StaticResource OptionBorder}">
+          <CheckBox
+            IsChecked="{Binding AbortOnEscape}">
+            <StackPanel>
+              <TextBlock
+                Style="{StaticResource HeaderTextBlock}">Abort on Escape</TextBlock>
+              <TextBlock
+                Style="{StaticResource OptionDescription}">If checked, will abort any currently speaking text on Escape.</TextBlock>
+            </StackPanel>
+          </CheckBox>
+        </Border>
+
+        <Border
+          Style="{StaticResource OptionBorder}">
+          <CheckBox
+            IsChecked="{Binding OverrideWithNewText}">
+            <StackPanel>
+              <TextBlock
+                Style="{StaticResource HeaderTextBlock}">Override with new text.</TextBlock>
+              <TextBlock
+                Style="{StaticResource OptionDescription}">If checked, will cause any new text added to the clipboard to interrupt any currently spoken text.</TextBlock>
+            </StackPanel>
+          </CheckBox>
+        </Border>
 
       </StackPanel>
 
