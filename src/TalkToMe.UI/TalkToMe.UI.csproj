@@ -188,6 +188,10 @@
       <Name>TalkToMe.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Image\settings_general.png" />
+    <Resource Include="Image\settings_shortcuts.png" />
+    <Resource Include="Image\settings_speech.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

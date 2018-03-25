@@ -8,7 +8,7 @@
   xmlns:view="clr-namespace:TalkToMe.UI.View"
   mc:Ignorable="d"
   Title="Talk To Me"
-  Height="350"
+  Height="450"
   Width="800">
   <Grid>
     <view:SpeechManagerView x:Name="mainView" DataContext="{x:Null}"/>
