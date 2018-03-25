@@ -194,6 +194,51 @@ namespace TalkToMe.Core.Unittest
             speechmanager.CurrentVoice.Should().Be(vd2);
         }
 
+        [Fact]
+        public void ShouldAbortCurrentVoiceOnSwitch()
+        {
+            var hotKeys = new Dictionary<KeyInfo, CommandType>
+            {
+                { new KeyInfo(Keys.A, Keys.Shift), CommandType.SwapLanguage },
+            };
+
+            var vd1 = new VoiceDescriptor(VoiceProvider.MicrosoftSpeech, "TestVoice");
+            var vd2 = new VoiceDescriptor(VoiceProvider.SystemSpeech, "OtherVoice");
+            var config = new Config(true, false, true, true, hotKeys, vd1, vd2);
+            var clipboardMonitor = Substitute.For<IClipboardTextMonitor>();
+            var voice1 = Substitute.For<IVoice>();
+            voice1.Descriptor.Returns(vd1);
+            var voice2 = Substitute.For<IVoice>();
+            voice2.Descriptor.Returns(vd2);
+
+            var voiceFactory = new MockVoiceFactory(vd =>
+            {
+                if (vd.Provider == VoiceProvider.MicrosoftSpeech)
+                {
+                    return voice1;
+                }
+                else
+                {
+                    return voice2;
+                }
+            });
+            var keyMonitor = Substitute.For<IKeyMonitor>();
+            var configStore = Substitute.For<IConfigPersistence>();
+            var keySubject = new Subject<KeyInfo>();
+            var textSubject = new Subject<string>();
+
+            keyMonitor.KeysObservable.Returns(keySubject);
+            clipboardMonitor.ClipboardTextObservable.Returns(textSubject);
+
+            var speechmanager = new SpeechManager(clipboardMonitor, voiceFactory, keyMonitor, configStore, config);
+
+            // Should initially be voice1
+            speechmanager.CurrentVoice.Should().Be(vd1);
+            keySubject.OnNext(new KeyInfo(Keys.A, Keys.Shift));
+
+            voice1.Received().Abort();
+        }
+
         private static IVoiceFactory CreateSimpleVoiceFactory(IVoice returnedVoice)
         {
             var voiceFactory = Substitute.For<IVoiceFactory>();
