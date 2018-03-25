@@ -222,6 +222,8 @@
         /// </summary>
         private void SwapLanguage()
         {
+            this.currentVoice.Abort();
+
             if (this.currentVoice.Descriptor == this.primaryVoice.Descriptor)
             {
                 this.currentVoice = this.secondaryVoice;
