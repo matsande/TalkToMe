@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject>TalkToMe.UI.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>talketome_ztW_icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SimpleInjector, Version=4.0.12.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SimpleInjector.4.0.12\lib\net45\SimpleInjector.dll</HintPath>
@@ -192,6 +195,9 @@
     <Resource Include="Image\settings_general.png" />
     <Resource Include="Image\settings_shortcuts.png" />
     <Resource Include="Image\settings_speech.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="talketome_ztW_icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
