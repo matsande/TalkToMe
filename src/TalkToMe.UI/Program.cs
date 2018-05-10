@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using SimpleInjector;
 using TalkToMe.Core;
 using TalkToMe.Core.Hook;
+using TalkToMe.Core.Plugin;
 using TalkToMe.Core.Voice;
 using TalkToMe.UI.View;
 using TalkToMe.UI.ViewModel;
@@ -49,6 +50,7 @@ namespace TalkToMe.UI
             container.Register<IHookProvider, StaticHookProvider>(Lifestyle.Singleton);
             container.Register<IKeyMonitor, HookKeyMonitor>(Lifestyle.Singleton);
             container.Register<IModifierStateChecker, AsyncKeyStateModifierStateChecker>(Lifestyle.Singleton);
+            container.Register<IPluginManager, SamplePluginManager>(Lifestyle.Singleton);
 
             container.RegisterSingleton<IConfigPersistence>(configPersistence);
 

@@ -7,6 +7,7 @@
     using System.Reactive.Subjects;
     using System.Windows.Forms;
     using TalkToMe.Core.Hook;
+    using TalkToMe.Core.Plugin;
     using TalkToMe.Core.Voice;
 
     /*
@@ -39,18 +40,21 @@
         /// <param name="keyMonitor">The <see cref="IKeyMonitor"/></param>
         /// <param name="configPersistence">The <see cref="IConfigPersistence"/></param>
         /// <param name="config">The <see cref="Config"/></param>
+        /// <param name="pluginManager">The <see cref="IPluginManager"/></param>
         public SpeechManager(
             IClipboardTextMonitor clipboardMonitor,
             IVoiceFactory voiceFactory,
             IKeyMonitor keyMonitor,
             IConfigPersistence configPersistence,
-            Config config)
+            Config config,
+            IPluginManager pluginManager)
         {
             this.clipboardMonitor = clipboardMonitor;
             this.voiceFactory = voiceFactory;
             this.keyMonitor = keyMonitor;
             this.configPersistence = configPersistence;
             this.config = config;
+            this.pluginManager = pluginManager;
 
             this.InitializeVoices();
             this.commandMap = this.InitializeCommands(config);
@@ -248,7 +252,14 @@
                     this.currentVoice.Abort();
                 }
 
-                this.currentVoice.Speak(this.lastText);
+                var text = this.lastText;
+
+                foreach (var plugin in this.pluginManager.Plugins)
+                {
+                    text = plugin.FormatText(text);
+                }
+
+                this.currentVoice.Speak(text);
             }
         }
 
@@ -294,7 +305,7 @@
         private IVoice primaryVoice;
         private IVoice secondaryVoice;
         private Config config;
-
+        private readonly IPluginManager pluginManager;
         private string lastText;
 
         private IVoice currentVoice;
