@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,7 +52,13 @@ namespace TalkToMe.UI
             container.Register<IHookProvider, StaticHookProvider>(Lifestyle.Singleton);
             container.Register<IKeyMonitor, HookKeyMonitor>(Lifestyle.Singleton);
             container.Register<IModifierStateChecker, AsyncKeyStateModifierStateChecker>(Lifestyle.Singleton);
-            container.Register<IPluginManager, SamplePluginManager>(Lifestyle.Singleton);
+
+            var applicationRoot = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var pluginFolder = Path.Combine(applicationRoot, "Plugins");
+            var pluginManager = new PluginManager();
+            pluginManager.Initialize(pluginFolder);
+            //container.Register<IPluginManager, SamplePluginManager>(Lifestyle.Singleton);
+            container.RegisterSingleton<IPluginManager>(pluginManager);
 
             container.RegisterSingleton<IConfigPersistence>(configPersistence);
 
